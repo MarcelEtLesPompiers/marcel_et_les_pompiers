@@ -1,17 +1,23 @@
-window.onload = function()
-{
-  var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create });
+"use strict";
 
-  function preload ()
-  {
-    game.load.image('logo', 'img/phaser.png');
-  }
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
 
-  function create ()
-  {
-    var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
-    logo.anchor.setTo(0.5, 0.5);
-  }
+var PhaserGame = function(game) {
+
+  //...
+
 };
 
+PhaserGame.prototype = {
+  preload: function() {
+    this.load.crossOrigin = 'anonymous';
+    this.load.image('logo', 'img/phaser.png');
+  },
 
+  create: function() {
+    var logo = this.add.sprite(game.world.centerX, game.world.centerY, 'logo');
+    logo.anchor.setTo(0.5, 0.5);
+  },
+};
+
+game.state.add('game', PhaserGame, true);
