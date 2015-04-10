@@ -1,6 +1,6 @@
 "use strict";
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
+var game = new Phaser.Game(1020, 1080, Phaser.AUTO, 'game');
 
 var PhaserGame = function(game) {
 
