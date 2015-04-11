@@ -31,6 +31,8 @@ var PhaserGame = {
   cursors2: null,
   // pad
   pad1: null,
+  // music
+  music: null,
   // Tiles attachements
   fire: [],
 
@@ -60,6 +62,9 @@ var PhaserGame = {
     this.load.image('fire1', 'img/sprites/feu.png');
     this.load.image('fire2', 'img/sprites/feu2.png');
     this.load.image('fire3', 'img/sprites/feu3.png');
+
+    // music
+    game.load.audio('musette', ['sound/marcel_musette.mp3', 'sound/marcel_musette.ogg']);
   },
 
   create: function () {
@@ -94,6 +99,9 @@ var PhaserGame = {
     /*game.input.gamepad.start();
     this.pad1 = game.input.gamepad.pad1;*/
 
+    // music
+    this.music = game.add.audio('musette');
+    this.music.play();
 
     // Starts the fire
     fire.init();
