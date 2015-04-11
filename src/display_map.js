@@ -12,7 +12,12 @@ var startFire = [
   [8, 2],
 ];
 var numStartFire = 2;
+var fireSpeed = 1000; // Higher is slower
+var fireRate = 50; // 0 -> 100
 
+//
+// Game starts here
+//
 var game = new Phaser.Game(1800, 1080, Phaser.AUTO, 'game');
 
 var PhaserGame = {
@@ -23,10 +28,14 @@ var PhaserGame = {
   // Player
   player1: null,
   player2: null,
+  cursors2: null,
   // pad
   pad1: null,
   // Tiles attachements
   fire: [],
+
+  // HUS
+  timer: null,
 
   init: function () {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -70,105 +79,148 @@ var PhaserGame = {
     // physics
     this.map.setCollision(2, true, this.layer);
     this.physics.arcade.enable(this.player1);
+    this.physics.arcade.enable(this.player2);
 
     // Player's control
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    // pad
-    game.input.gamepad.start();
-    this.pad1 = game.input.gamepad.pad1;
+    // Player 2's controls
+    this.cursors2 = {
+        up:  this.input.keyboard.addKey(Phaser.Keyboard.Z),
+        down:  this.input.keyboard.addKey(Phaser.Keyboard.S),
+        left:  this.input.keyboard.addKey(Phaser.Keyboard.Q),
+        right:  this.input.keyboard.addKey(Phaser.Keyboard.D)
+    };
+    /*game.input.gamepad.start();
+    this.pad1 = game.input.gamepad.pad1;*/
+
 
     // Starts the fire
     fire.init();
+
+    // Interface timer
+    this.timer = game.add.text(90, 10, '0', {font: "64px Arial", fill: "#000000"});
+    this.setTime();
+    this.startTimer();
   },
 
   update: function ()
   {
     this.physics.arcade.collide(this.player1, this.layer);
+    this.physics.arcade.collide(this.player2, this.layer);
     this.checkKeys();
-    this.checkPad();
+    //this.checkPad();
   },
 
   checkKeys: function () {
+
+    // Player 1
     if (this.cursors.left.isDown)
     {
-      this.move(Phaser.LEFT);
-      this.turn_sprit(Phaser.LEFT);
+      this.move(Phaser.LEFT, this.player1);
+      this.turn_sprit(Phaser.LEFT, this.player1);
     }
     else if (this.cursors.right.isDown)
     {
-      this.move(Phaser.RIGHT);
-      this.turn_sprit(Phaser.RIGHT);
+      this.move(Phaser.RIGHT, this.player1);
+      this.turn_sprit(Phaser.RIGHT, this.player1);
     }
     else if (this.cursors.up.isDown)
     {
-      this.move(Phaser.UP);
-      this.turn_sprit(Phaser.UP);
+      this.move(Phaser.UP, this.player1);
+      this.turn_sprit(Phaser.UP, this.player1);
     }
     else if (this.cursors.down.isDown)
     {
-      this.move(Phaser.DOWN);
-      this.turn_sprit(Phaser.DOWN);
+      this.move(Phaser.DOWN, this.player1);
+      this.turn_sprit(Phaser.DOWN, this.player1);
     }
     else
     {
-      this.move();
+      this.move(false, this.player1);
+    }
+
+    // Player 2
+    if (this.cursors2.left.isDown)
+    {
+      this.move(Phaser.LEFT, this.player2);
+      this.turn_sprit(Phaser.LEFT, this.player2);
+    }
+    else if (this.cursors2.right.isDown)
+    {
+      this.move(Phaser.RIGHT, this.player2);
+      this.turn_sprit(Phaser.RIGHT, this.player2);
+    }
+    else if (this.cursors2.up.isDown)
+    {
+      this.move(Phaser.UP, this.player2);
+      this.turn_sprit(Phaser.UP, this.player2);
+    }
+    else if (this.cursors2.down.isDown)
+    {
+      this.move(Phaser.DOWN, this.player2);
+      this.turn_sprit(Phaser.DOWN, this.player2);
+    }
+    else
+    {
+      this.move(false, this.player2);
     }
   },
 
-  move: function (direction)
-  {
+  move: function (direction, player) {
     var speed = 300;
-    if (direction === Phaser.LEFT)
-    {
-      this.player1.body.velocity.x = -speed;
-      this.player1.body.velocity.y = 0;
-    }
 
-    else if (direction === Phaser.UP)
-    {
-      this.player1.body.velocity.x = 0;
-      this.player1.body.velocity.y = -speed;
-    }
+    switch(direction) {
+      case Phaser.UP :
+        player.body.velocity.x = 0;
+        player.body.velocity.y = -speed;
+        break;
 
-    else if (direction === Phaser.RIGHT)
-    {
-      this.player1.body.velocity.x = speed;
-      this.player1.body.velocity.y = 0;
-    }
+      case Phaser.RIGHT :
+        player.body.velocity.x = speed;
+        player.body.velocity.y = 0;
+        break;
 
-    else if (direction === Phaser.DOWN)
-    {
-      this.player1.body.velocity.x = 0;
-      this.player1.body.velocity.y = speed;
-    }
-    else
-    {
-      this.player1.body.velocity.x = 0;
-      this.player1.body.velocity.y = 0;
+      case Phaser.DOWN :
+        player.body.velocity.x = 0;
+        player.body.velocity.y = speed;
+        break;
+
+      case Phaser.LEFT :
+        player.body.velocity.x = -speed;
+        player.body.velocity.y = 0;
+        break;
+
+      case Phaser.LEFT + '-' + Phaser.UP :
+        player.body.velocity.x = -speed;
+        player.body.velocity.y = -speed;
+        break;
+
+      default :
+        player.body.velocity.x = 0;
+        player.body.velocity.y = 0;
+        break;
+
     }
   },
 
-  turn_sprit: function (direction)
+  turn_sprit: function (direction, player)
   {
     if (direction === Phaser.LEFT)
     {
-      this.player1.angle = -90;
+      player.angle = -90;
     }
-
     else if (direction === Phaser.UP)
     {
-      this.player1.angle = 0;
+      player.angle = 0;
     }
-
     else if (direction === Phaser.RIGHT)
     {
-      this.player1.angle = 90;
+      player.angle = 90;
     }
-
     else if (direction === Phaser.DOWN)
     {
-      this.player1.angle = 180;
+      player.angle = 180;
     }
   },
 
@@ -190,6 +242,16 @@ var PhaserGame = {
       this.player2.y++;
     }
   },
+
+  startTimer: function() {
+    window.setInterval(function() {
+      PhaserGame.setTime();
+    }, 1000);
+  },
+
+  setTime: function() {
+    this.timer.setText(Math.floor(this.game.time.totalElapsedSeconds()));
+  },
 };
 
 /**
@@ -201,7 +263,7 @@ var fire = {
   tiles: [],
   tilesInProgress: [],
   interval: null,
-  delay: 200,
+  delay: 500,
   step: 0,
 
   init: function () {
@@ -391,6 +453,7 @@ var fire = {
       saveTile = this.tiles[k];
       if (savedTile === coords) {
         delete this.tiles[k];
+         PhaserGame.fire[coords[0] + '-' + coords[1]].destroy();
         this.display();
         return true;
       }
@@ -400,6 +463,7 @@ var fire = {
       saveTile = this.tilesInProgress[k];
       if (savedTile === coords) {
         delete this.tilesInProgress[k];
+         PhaserGame.fire[coords[0] + '-' + coords[1]].destroy();
         this.display();
         return true;
       }
