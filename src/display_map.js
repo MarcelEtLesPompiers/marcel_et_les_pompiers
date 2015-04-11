@@ -238,6 +238,10 @@ var fire = {
       var y = coords[1];
 
       var tile = PhaserGame.map.getTile(x, y);
+      if(typeof(PhaserGame.fire[x + '-' + y]) !== 'undefined' && PhaserGame.fire[x + '-' + y].key === 'fire1') {
+        return;
+      }
+
       PhaserGame.fire[x + '-' + y] = PhaserGame.add.sprite(tile.worldX, tile.worldY, 'fire1');
     });
 
@@ -245,7 +249,6 @@ var fire = {
       var x = coords[0];
       var y = coords[1];
       var sprite;
-
       var tile = PhaserGame.map.getTile(x, y);
 
       switch (step) {
