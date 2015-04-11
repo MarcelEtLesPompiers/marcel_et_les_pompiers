@@ -3,6 +3,8 @@
 //
 // Config
 //
+
+// Starting fire, picked at random
 var startFire = [
   [5, 4],
   [3, 6],
@@ -16,6 +18,7 @@ var fireDelay = 750; // Higher is slower
 var fireRate = 2; // Divides the number of starting fires
 var waterLife = 150; // in Ms
 var requiredSpam = 5;
+var hitInvincibility = 1500; // in Ms
 
 //
 // Game starts here
@@ -32,6 +35,7 @@ var PhaserGame = {
   player1: null,
   player2: null,
 
+  player1Wait: false,
   player1Charge: 0,
   player1Counter: null,
 
@@ -63,16 +67,16 @@ var PhaserGame = {
   water: null,
   waterLife: waterLife,
 
-  // HUS
+  // HUD
   timer: null,
   timeCounter: null,
+  lifePlayer1: null,
+  lifePlayer2: null,
 
   init: function () {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;
     this.scale.pageAlignVertically = true;
-
-    Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
 
     this.physics.startSystem(Phaser.Physics.ARCADE);
   },
@@ -97,6 +101,9 @@ var PhaserGame = {
     this.load.image('water', 'img/sprites/water.png');
     this.load.image('water2', 'img/sprites/Water_marcel.png');
     this.load.image('pump', 'img/sprites/pompe.png');
+
+    this.load.image('heart', 'img/hud/Heart.png');
+    this.load.image('heartEmpty', 'img/hud/heartEmpty.png');
 
     // music
     game.load.audio('musette', ['sound/marcel_musette.mp3', 'sound/marcel_musette.ogg']);
@@ -126,11 +133,18 @@ var PhaserGame = {
     this.fire.physicsBodyType = Phaser.Physics.ARCADE;
     this.fire.enableBody = true;
 
+    this.lifePlayer1 = this.add.group();
+    this.lifePlayer2 = this.add.group();
+
     // Add the player to the game
     this.player1 = this.add.sprite(150, 150, 'player1');
+    this.player1Invincible = false;
     this.player1.anchor.set(0.5);
+    this.player1.health = 3;
     this.player2 = this.add.sprite(1600, 900, 'player2');
     this.player2.anchor.set(0.5);
+    this.player2Invincible = false;
+    this.player2.health = 3;
 
     // physics
     this.map.setCollision([2,3,4], true, this.layer);
@@ -172,6 +186,19 @@ var PhaserGame = {
     this.setPlayer1Counter();
 
     this.pumpModeCounter = this.add.text(500, 1000, 'Pompe vers pompier', {font: "64px Arial", fill: "#FFFFFF"});
+
+    // Iterface lifes
+    var i;
+    for(i = 0; i < 3; i++) {
+      var heart = this.lifePlayer1.create(260 + (i * 100), 30, 'heart');
+      heart.name = 'heart-' + i;
+      heart.scale.setTo(0.25, 0.25);
+    }
+    for(i = 0; i < 3; i++) {
+      var heart = this.lifePlayer2.create(1260 + (i * 100), 30, 'heart');
+      heart.name = 'heart-' + i;
+      heart.scale.setTo(0.25, 0.25);
+    }
   },
 
   update: function () {
@@ -179,6 +206,9 @@ var PhaserGame = {
     this.physics.arcade.collide(this.player2, this.layer);
     this.checkKeys();
     this.physics.arcade.overlap(this.water, this.fire, this.waterCollision);
+
+    this.physics.arcade.overlap(this.player1, this.fire, this.damagePlayer);
+    this.physics.arcade.overlap(this.player2, this.fire, this.damagePlayer);
   },
 
   checkKeys: function () {
@@ -257,7 +287,92 @@ var PhaserGame = {
         this.throwWater(this.player2);
       }
     } else if(this.pumpDown) {
+      this.pump.tint = 0xFFFFFF;
       this.pumpDown = false;
+    }
+  },
+
+  damagePlayer: function(player, fire) {
+    if('player1' === player.key && PhaserGame.player1Invincible) {
+      return;
+    } else if('player2' === player.key && PhaserGame.player2Invincible) {
+      return;
+    }
+
+    player.health--;
+
+    if(0 >= player.health) {
+      // DED :(
+      //return
+    }
+
+    player.alpha = 0.5;
+
+    switch(player.key) {
+      case 'player1' :
+        PhaserGame.player1Invincible = true;
+        PhaserGame.timer.add(hitInvincibility, function() {
+          PhaserGame.player1Invincible = false;
+          PhaserGame.player1.alpha = 1;
+        });
+        break;
+
+
+      case 'player2' :
+        PhaserGame.player2Invincible = true;
+        PhaserGame.timer.add(hitInvincibility, function() {
+          PhaserGame.player2Invincible = false;
+          PhaserGame.player2.alpha = 1;
+        });
+        break;
+
+    }
+
+    console.log(player.health);
+    PhaserGame.updateHealth(player);
+  },
+
+  updateHealth: function(player) {
+    var group;
+    var i;
+
+    switch(player.key) {
+      case 'player1' :
+        group = PhaserGame.lifePlayer1;
+        break;
+
+      case 'player2' :
+        group = PhaserGame.lifePlayer2;
+    }
+
+    if(3 === player.health) {
+      for(i = 0; i < 2; i++) {
+        var heart = group.next();
+          heart.loadTexture('heart');
+      }
+    } else if(2 === player.health) {
+      for(i = 0; i < 3; i++) { // Bad fix, boo!
+        var heart = group.next();
+        if('heart-0' === heart.name) {
+          heart.loadTexture('heartEmpty');
+        } else {
+          heart.loadTexture('heart');
+        }
+      }
+    } else if(1 === player.health) {
+      for(i = 0; i < 2; i++) {
+        var heart = group.next();
+        if('heart-2' === heart.name) {
+          heart.loadTexture('heart');
+        } else {
+          heart.loadTexture('heartEmpty');
+        }
+      }
+    } else {
+      for(i = 0; i < 2; i++) {
+        var heart = group.next();
+          heart.loadTexture('heartEmpty');
+      }
     }
   },
 
@@ -382,6 +497,8 @@ var PhaserGame = {
 
   pumpAction: function() {
     this.pumpDown = true;
+
+    this.pump.tint = 0.5 * 0xFFFFFF;
 
     if(this.pumpPompier) {
       this.player1Charge++;
