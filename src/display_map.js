@@ -41,16 +41,20 @@ PhaserGame.prototype = {
     this.layer = this.map.createLayer('Map1');
 
     // Add the player to the game
-    this.player1 = this.add.sprite(45, 45, 'player1');
+    this.player1 = this.add.sprite(150, 150, 'player1');
     this.player1.anchor.set(0.5);
 
-    // Player's control
+    // physics
+    this.map.setCollision(20, true, this.layer);
     this.physics.arcade.enable(this.player1);
+
+    // Player's control
     this.cursors = this.input.keyboard.createCursorKeys();
   },
 
   update: function ()
   {
+    this.physics.arcade.collide(this.player1, this.layer);
     this.checkKeys();
   },
 
