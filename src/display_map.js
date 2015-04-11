@@ -12,8 +12,9 @@ var startFire = [
   [8, 2],
 ];
 var numStartFire = 2;
-var fireSpeed = 1000; // Higher is slower
+var fireDelay = 750; // Higher is slower
 var fireRate = 2; // Divides the number of starting fires
+var waterLife = 50; // in Ms
 
 //
 // Game starts here
@@ -25,20 +26,30 @@ var PhaserGame = {
   map: null,
   layer: null,
   gridsize: 90,
+
   // Player
   player1: null,
   player2: null,
   cursors2: null,
+  attack1: null,
+  attack2: null,
+
   // pad
   pad1: null,
+
   // music
   musette: null,
   fire_sound : null,
-  // Tiles attachements
-  fire: [],
+
+  // Sprite attachements
+  fire: null,
+  water: null,
+  waterLife: waterLife,
 
   // HUS
   timer: null,
+  timeCounter: null,
+
 
   init: function () {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -63,10 +74,12 @@ var PhaserGame = {
     this.load.image('fire1', 'img/sprites/feu.png');
     this.load.image('fire2', 'img/sprites/feu2.png');
     this.load.image('fire3', 'img/sprites/feu3.png');
+    this.load.image('water', 'img/sprites/water.png');
 
     // music
     game.load.audio('musette', ['sound/marcel_musette.mp3', 'sound/marcel_musette.ogg']);
     game.load.audio('fire_sound', ['sound/fire_sound.ogg']);
+
   },
 
   create: function () {
@@ -76,10 +89,17 @@ var PhaserGame = {
 
     this.layer = this.map.createLayer('Map1');
 
+    // Fire / Water group collision
+    this.water = this.add.group();
+    this.water.physicsBodyType = Phaser.Physics.ARCADE;
+    this.water.enableBody = true;
+    this.fire = this.add.group();
+    this.fire.physicsBodyType = Phaser.Physics.ARCADE;
+    this.fire.enableBody = true;
+
     // Add the player to the game
     this.player1 = this.add.sprite(150, 150, 'player1');
     this.player1.anchor.set(0.5);
-
     this.player2 = this.add.sprite(1600, 900, 'player2');
     this.player2.anchor.set(0.5);
 
@@ -90,14 +110,14 @@ var PhaserGame = {
 
     // Player's control
     this.cursors = this.input.keyboard.createCursorKeys();
-
-    // Player 2's controls
-    this.cursors2 = {
-        up:  this.input.keyboard.addKey(Phaser.Keyboard.Z),
-        down:  this.input.keyboard.addKey(Phaser.Keyboard.S),
-        left:  this.input.keyboard.addKey(Phaser.Keyboard.Q),
-        right:  this.input.keyboard.addKey(Phaser.Keyboard.D)
+    this.attack1 = this.input.keyboard.addKey(Phaser.Keyboard.A);
+    this.cursors1 = {
+        up: this.input.keyboard.addKey(Phaser.Keyboard.Z),
+        down: this.input.keyboard.addKey(Phaser.Keyboard.S),
+        left: this.input.keyboard.addKey(Phaser.Keyboard.Q),
+        right: this.input.keyboard.addKey(Phaser.Keyboard.D)
     };
+
     /*game.input.gamepad.start();
     this.pad1 = game.input.gamepad.pad1;*/
 
@@ -112,9 +132,9 @@ var PhaserGame = {
     // Starts the fire
     fire.init();
 
-    // Interface timer
-    this.timer = game.add.text(90, 10, '0', {font: "64px Arial", fill: "#000000"});
-    this.setTime();
+    // Interface timeCounter
+    this.timer = this.time.create(true);
+    this.timeCounter = this.add.text(90, 10, '0', {font: "64px Arial", fill: "#000000"});
     this.startTimer();
   },
 
@@ -123,6 +143,7 @@ var PhaserGame = {
     this.physics.arcade.collide(this.player1, this.layer);
     this.physics.arcade.collide(this.player2, this.layer);
     this.checkKeys();
+    this.physics.arcade.overlap(this.water, this.fire, this.waterCollision);
     //this.checkPad();
   },
 
@@ -131,20 +152,46 @@ var PhaserGame = {
     // Player 1
     if (this.cursors.left.isDown)
     {
+      this.move(Phaser.LEFT, this.player2);
+      this.turn_sprit(Phaser.LEFT, this.player2);
+    }
+    else if (this.cursors.right.isDown)
+    {
+      this.move(Phaser.RIGHT, this.player2);
+      this.turn_sprit(Phaser.RIGHT, this.player2);
+    }
+    else if (this.cursors.up.isDown)
+    {
+      this.move(Phaser.UP, this.player2);
+      this.turn_sprit(Phaser.UP, this.player2);
+    }
+    else if (this.cursors.down.isDown)
+    {
+      this.move(Phaser.DOWN, this.player2);
+      this.turn_sprit(Phaser.DOWN, this.player2);
+    }
+    else
+    {
+      this.move(false, this.player2);
+    }
+
+    // Player 2
+    if (this.cursors1.left.isDown)
+    {
       this.move(Phaser.LEFT, this.player1);
       this.turn_sprit(Phaser.LEFT, this.player1);
     }
-    else if (this.cursors.right.isDown)
+    else if (this.cursors1.right.isDown)
     {
       this.move(Phaser.RIGHT, this.player1);
       this.turn_sprit(Phaser.RIGHT, this.player1);
     }
-    else if (this.cursors.up.isDown)
+    else if (this.cursors1.up.isDown)
     {
       this.move(Phaser.UP, this.player1);
       this.turn_sprit(Phaser.UP, this.player1);
     }
-    else if (this.cursors.down.isDown)
+    else if (this.cursors1.down.isDown)
     {
       this.move(Phaser.DOWN, this.player1);
       this.turn_sprit(Phaser.DOWN, this.player1);
@@ -154,30 +201,9 @@ var PhaserGame = {
       this.move(false, this.player1);
     }
 
-    // Player 2
-    if (this.cursors2.left.isDown)
+    if (this.attack1.isDown)
     {
-      this.move(Phaser.LEFT, this.player2);
-      this.turn_sprit(Phaser.LEFT, this.player2);
-    }
-    else if (this.cursors2.right.isDown)
-    {
-      this.move(Phaser.RIGHT, this.player2);
-      this.turn_sprit(Phaser.RIGHT, this.player2);
-    }
-    else if (this.cursors2.up.isDown)
-    {
-      this.move(Phaser.UP, this.player2);
-      this.turn_sprit(Phaser.UP, this.player2);
-    }
-    else if (this.cursors2.down.isDown)
-    {
-      this.move(Phaser.DOWN, this.player2);
-      this.turn_sprit(Phaser.DOWN, this.player2);
-    }
-    else
-    {
-      this.move(false, this.player2);
+      this.throwWater(this.player1);
     }
   },
 
@@ -215,6 +241,58 @@ var PhaserGame = {
         player.body.velocity.y = 0;
         break;
 
+    }
+  },
+
+  /**
+   * Add some water
+   *
+   * @param {object} player
+   * @returns {undefined}
+   */
+  throwWater: function(player) {
+    var x = player.x;
+    var y = player.y;
+
+    switch(player.angle) {
+      case 0 :
+        y = y - 75;
+        break;
+
+      case 90 :
+        x = x + 75;
+        break;
+
+      case -180 :
+        y = y + 75;
+        break;
+
+      case -90 :
+        x = x - 75;
+        break;
+
+    }
+
+    var water = this.water.create(x, y, 'water');
+    water.anchor.set(0.5, 0.5);
+    water.angle = player.angle;
+
+    // Delete this water afterwards
+    this.timer.add(this.waterLife, function() {
+      var water = PhaserGame.water.getFirstExists();
+      if(water) {
+        PhaserGame.water.remove(water);
+      }
+    });
+  },
+
+  waterCollision: function(waterSprite, fireSprite) {
+    var removed = false;
+    removed = fire.extinguish([fireSprite.x, fireSprite.y]) || removed;
+
+    if(removed)
+    {
+      fire.display();
     }
   },
 
@@ -258,13 +336,14 @@ var PhaserGame = {
   },
 
   startTimer: function() {
-    window.setInterval(function() {
+    this.timer.loop(1000, function() {
       PhaserGame.setTime();
-    }, 1000);
+    });
+    this.timer.start();
   },
 
   setTime: function() {
-    this.timer.setText(Math.floor(this.game.time.totalElapsedSeconds()));
+    this.timeCounter.setText(Math.floor(this.game.time.totalElapsedSeconds()));
   },
 };
 
@@ -278,8 +357,10 @@ var fire = {
   tilesInProgress: [],
   tilesCandidate: [],
   interval: null,
-  delay: 500,
+  delay: fireDelay,
   step: 0,
+
+  timer: null,
 
   init: function () {
     var i;
@@ -297,29 +378,33 @@ var fire = {
     }
 
     this.display();
-    window.setInterval(function () {
+    this.timer = PhaserGame.time.create(true);
+    this.timer.loop(this.delay, function () {
       fire.tick();
-    }, this.delay);
+    });
+    this.timer.start();
   },
 
   /**
-   * Displays the fire
+   * Displays the fire and refresh the game playfield.
    *
    * @returns {undefined}
    */
   display: function () {
     var step = this.step;
+    var k;
+
+    PhaserGame.fire.removeAll();
+
+    console.log(this.tilesInProgress);
 
     this.tiles.map(function (coords) {
       var x = coords[0];
       var y = coords[1];
 
       var tile = PhaserGame.map.getTile(x, y);
-      if(typeof(PhaserGame.fire[x + '-' + y]) !== 'undefined' && PhaserGame.fire[x + '-' + y].key === 'fire1') {
-        return;
-      }
 
-      PhaserGame.fire[x + '-' + y] = PhaserGame.add.sprite(tile.worldX, tile.worldY, 'fire1');
+      PhaserGame.fire.create(tile.worldX, tile.worldY, 'fire1');
     });
 
     this.tilesInProgress.map(function (coords) {
@@ -338,12 +423,11 @@ var fire = {
           sprite = 'fire3';
           break;
 
-        case 1 :
+        default :
           sprite = 'fire2';
       }
 
-      PhaserGame.fire[x + '-' + y] = PhaserGame.add.sprite(tile.worldX, tile.worldY, sprite);
-
+      PhaserGame.fire.create(tile.worldX, tile.worldY, sprite);
     });
   },
 
@@ -446,7 +530,9 @@ var fire = {
         var i;
         for(i = 0; i < maxTiles; i++) {
           var key = Math.floor(Math.random() * startFire.length);
-          this.tilesInProgress.push(this.tilesCandidate[key]);
+          if(this.tilesCandidate[key]) {
+            this.tilesInProgress.push(this.tilesCandidate[key]);
+          }
           delete this.tilesCandidate[key];
         }
 
@@ -493,23 +579,20 @@ var fire = {
    */
   extinguish: function (coords) {
     var savedTile;
+    var k;
 
     for (k in this.tiles) {
-      saveTile = this.tiles[k];
-      if (savedTile === coords) {
+      savedTile = this.tiles[k];
+      if (coords[0] === savedTile[0] * 90 && coords[1] === savedTile[1] * 90) {
         delete this.tiles[k];
-         PhaserGame.fire[coords[0] + '-' + coords[1]].destroy();
-        this.display();
         return true;
       }
     }
 
     for (k in this.tilesInProgress) {
-      saveTile = this.tilesInProgress[k];
-      if (savedTile === coords) {
+      savedTile = this.tilesInProgress[k];
+      if (coords[0] === savedTile[0] * 90 && coords[1] === savedTile[1] * 90) {
         delete this.tilesInProgress[k];
-         PhaserGame.fire[coords[0] + '-' + coords[1]].destroy();
-        this.display();
         return true;
       }
     }
