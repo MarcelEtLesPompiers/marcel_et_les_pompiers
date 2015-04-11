@@ -30,7 +30,7 @@ var PhaserGame = {
   // Player
   player1: null,
   player2: null,
-  cursors2: null,
+  cursors1: null,
   attack1: null,
   attack2: null,
 
@@ -50,7 +50,6 @@ var PhaserGame = {
   timer: null,
   timeCounter: null,
 
-
   init: function () {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;
@@ -64,9 +63,12 @@ var PhaserGame = {
   preload: function () {
     this.load.crossOrigin = 'anonymous';
 
-    this.load.tilemap('map', 'map/map.json', null, Phaser.Tilemap.TILED_JSON);
-    this.load.image('floor', 'img/tiles/floor.png');
-    this.load.image('wall', 'img/tiles/wall.png');
+    this.load.tilemap('map', 'map/Lvl_01.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.image('Floor', 'img/tiles/sol_parquet.png');
+    this.load.image('floor2', 'img/tiles/Centre.png');
+    this.load.image('hWall', 'img/tiles/mur_horizontal.png');
+    this.load.image('vWall', 'img/tiles/mur_vertical.png');
+    this.load.image('cWall', 'img/tiles/mur_cross.png');
 
     this.load.image('player1', 'img/player1.png');
     this.load.image('player2', 'img/player2.png');
@@ -84,10 +86,13 @@ var PhaserGame = {
 
   create: function () {
     this.map = this.add.tilemap('map');
-    this.map.addTilesetImage('floor', 'floor');
-    this.map.addTilesetImage('wall', 'wall');
+    this.map.addTilesetImage('Floor', 'Floor');
+    this.map.addTilesetImage('floor2', 'floor2');
+    this.map.addTilesetImage('hWall', 'hWall');
+    this.map.addTilesetImage('vWall', 'vWall');
+    this.map.addTilesetImage('cWall', 'cWall');
 
-    this.layer = this.map.createLayer('Map1');
+    this.layer = this.map.createLayer('lvl_01');
 
     // Fire / Water group collision
     this.water = this.add.group();
@@ -104,7 +109,7 @@ var PhaserGame = {
     this.player2.anchor.set(0.5);
 
     // physics
-    this.map.setCollision(2, true, this.layer);
+    this.map.setCollision([2,3,4], true, this.layer);
     this.physics.arcade.enable(this.player1);
     this.physics.arcade.enable(this.player2);
 
@@ -138,13 +143,11 @@ var PhaserGame = {
     this.startTimer();
   },
 
-  update: function ()
-  {
+  update: function () {
     this.physics.arcade.collide(this.player1, this.layer);
     this.physics.arcade.collide(this.player2, this.layer);
     this.checkKeys();
     this.physics.arcade.overlap(this.water, this.fire, this.waterCollision);
-    //this.checkPad();
   },
 
   checkKeys: function () {
