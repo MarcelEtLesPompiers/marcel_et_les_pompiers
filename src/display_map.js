@@ -49,22 +49,65 @@ PhaserGame.prototype = {
     this.cursors = this.input.keyboard.createCursorKeys();
   },
 
-  update: function () {
+  update: function ()
+  {
     this.checkKeys();
   },
 
   checkKeys: function () {
-      if (this.cursors.left.isDown) {
-        this.move(Phaser.LEFT)
-      } else if (this.cursors.right.isDown) {
-          this.move(Phaser.RIGHT)
-      }
+    if (this.cursors.left.isDown)
+    {
+      this.move(Phaser.LEFT)
+    }
+    else if (this.cursors.right.isDown)
+    {
+      this.move(Phaser.RIGHT)
+    }
+    else if (this.cursors.up.isDown)
+    {
+      this.move(Phaser.UP)
+    }
+    else if (this.cursors.down.isDown)
+    {
+      this.move(Phaser.DOWN);
+    }
+    else
+    {
+      this.move()
+    }
+  },
 
-      if (this.cursors.up.isDown) {
-         this.move(Phaser.UP)
-      } else if (this.cursors.down.isDown) {
-          this.move(Phaser.DOWN);
-      }
+  move: function (direction)
+  {
+    var speed = 200;
+    if (direction === Phaser.LEFT)
+    {
+      this.player1.body.velocity.x = -speed;
+      this.player1.body.velocity.y = 0;
+    }
+
+    else if (direction === Phaser.UP)
+    {
+      this.player1.body.velocity.x = 0;
+      this.player1.body.velocity.y = -speed;
+    }
+
+    else if (direction === Phaser.RIGHT)
+    {
+      this.player1.body.velocity.x = speed;
+      this.player1.body.velocity.y = 0;
+    }
+
+    else if (direction === Phaser.DOWN)
+    {
+      this.player1.body.velocity.x = 0;
+      this.player1.body.velocity.y = speed;
+    }
+    else
+    {
+      this.player1.body.velocity.x = 0;
+      this.player1.body.velocity.y = 0;
+    }
   },
 };
 
