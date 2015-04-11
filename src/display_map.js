@@ -61,19 +61,23 @@ PhaserGame.prototype = {
   checkKeys: function () {
     if (this.cursors.left.isDown)
     {
-      this.move(Phaser.LEFT)
+      this.move(Phaser.LEFT);
+      this.turn_sprit(Phaser.LEFT);
     }
     else if (this.cursors.right.isDown)
     {
-      this.move(Phaser.RIGHT)
+      this.move(Phaser.RIGHT);
+      this.turn_sprit(Phaser.RIGHT);
     }
     else if (this.cursors.up.isDown)
     {
-      this.move(Phaser.UP)
+      this.move(Phaser.UP);
+      this.turn_sprit(Phaser.UP);
     }
     else if (this.cursors.down.isDown)
     {
       this.move(Phaser.DOWN);
+      this.turn_sprit(Phaser.DOWN);
     }
     else
     {
@@ -83,7 +87,7 @@ PhaserGame.prototype = {
 
   move: function (direction)
   {
-    var speed = 200;
+    var speed = 300;
     if (direction === Phaser.LEFT)
     {
       this.player1.body.velocity.x = -speed;
@@ -111,6 +115,29 @@ PhaserGame.prototype = {
     {
       this.player1.body.velocity.x = 0;
       this.player1.body.velocity.y = 0;
+    }
+  },
+
+  turn_sprit: function (direction)
+  {
+    if (direction === Phaser.LEFT)
+    {
+      this.player1.angle = -90;
+    }
+
+    else if (direction === Phaser.UP)
+    {
+      this.player1.angle = 0;
+    }
+
+    else if (direction === Phaser.RIGHT)
+    {
+      this.player1.angle = 90;
+    }
+
+    else if (direction === Phaser.DOWN)
+    {
+      this.player1.angle = 180;
     }
   },
 };
