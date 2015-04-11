@@ -15,6 +15,7 @@ var numStartFire = 2;
 var fireDelay = 750; // Higher is slower
 var fireRate = 2; // Divides the number of starting fires
 var waterLife = 150; // in Ms
+var requiredSpam = 5;
 
 //
 // Game starts here
@@ -30,8 +31,14 @@ var PhaserGame = {
   // Player
   player1: null,
   player2: null,
+
+  player1Charge: 0,
+  player1Counter: null,
+
   player2Wait: false,
   player2Delay: 500,
+  player2Ammo: 3,
+  player2Counter: null,
 
   cursors1: null,
   attack1: null,
@@ -39,6 +46,10 @@ var PhaserGame = {
 
   pump: null,
   pumpDown: false,
+  pumpPompier: true,
+  pumpSwitch:true,
+  pumpModeCounter: null,
+  pumpSwitchKey: null,
 
   // pad
   pad1: null,
@@ -137,6 +148,8 @@ var PhaserGame = {
         right: this.input.keyboard.addKey(Phaser.Keyboard.D)
     };
 
+    this.pumpSwitchKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
+
     // music
     this.musette = game.add.audio('musette');
     this.musette.play();
@@ -150,8 +163,15 @@ var PhaserGame = {
 
     // Interface timeCounter
     this.timer = this.time.create(true);
-    this.timeCounter = this.add.text(90, 10, '0', {font: "64px Arial", fill: "#000000"});
+    this.timeCounter = this.add.text(90, 10, '0', {font: "64px Arial", fill: "#FFFFFF"});
     this.startTimer();
+
+    this.player2Counter = this.add.text(1580, 1000, this.player2Ammo, {font: "64px Arial", fill: "#FFFFFF"});
+
+    this.player1Counter = this.add.text(90, 1000, this.player1Charge, {font: "64px Arial", fill: "#FFFFFF"});
+    this.setPlayer1Counter();
+
+    this.pumpModeCounter = this.add.text(500, 1000, 'Pompe vers pompier', {font: "64px Arial", fill: "#FFFFFF"});
   },
 
   update: function () {
@@ -162,6 +182,16 @@ var PhaserGame = {
   },
 
   checkKeys: function () {
+    //Common
+    if(this.pumpSwitchKey.isDown) {
+      if(this.pumpSwitch) {
+        this.switchWaterMode();
+        this.pumpSwitch = false;
+      }
+    } else if(!this.pumpSwitch) {
+      this.pumpSwitch = true;
+    }
+
     // Player 1
     if (this.cursors1.left.isDown)
     {
@@ -186,10 +216,6 @@ var PhaserGame = {
     else
     {
       this.move(false, this.player1);
-    }
-
-    if (this.attack1.isDown) {
-      this.throwWater(this.player1);
     }
 
     if(this.player2Wait) {
@@ -235,6 +261,13 @@ var PhaserGame = {
     }
   },
 
+  /**
+   * Setup the velocity of one player
+   *
+   * @param {int} direction If false, will stop the player
+   * @param {obj} player player1 or player2
+   * @returns {undefined}
+   */
   move: function (direction, player) {
     var speed = 300;
 
@@ -283,6 +316,24 @@ var PhaserGame = {
     var y = player.y;
     var sprite;
 
+    // Extra actions for Marcel
+    if('player2' === player.key) {
+      if(0 === this.player2Ammo) {
+        return;
+      }
+
+      this.player2Ammo--;
+      this.player2Counter.setText(this.player2Ammo);
+      this.player2Wait = true;
+      this.move(false, PhaserGame.player2);
+      this.player2.loadTexture('player2Pour');
+
+      this.timer.add(this.player2Delay, function() {
+        PhaserGame.player2Wait = false;
+        PhaserGame.player2.loadTexture('player2');
+      });
+    }
+
     switch(player.angle) {
       case 0 :
         y = y - 70;
@@ -311,7 +362,7 @@ var PhaserGame = {
         sprite = 'water';
         break;
 
-      case 'player2' :
+      case 'player2Pour' :
         sprite = 'water2';
         break;
     }
@@ -327,24 +378,34 @@ var PhaserGame = {
         PhaserGame.water.remove(water);
       }
     });
-
-    // Extra actions for Marcel
-    if('player2' === player.key) {
-      this.player2Wait = true;
-      this.move(false, PhaserGame.player2);
-      this.player2.loadTexture('player2Pour');
-
-      this.timer.add(this.player2Delay, function() {
-        PhaserGame.player2Wait = false;
-        PhaserGame.player2.loadTexture('player2');
-      });
-    }
   },
 
   pumpAction: function() {
-    console.log('pump');
-
     this.pumpDown = true;
+
+    if(this.pumpPompier) {
+      this.player1Charge++;
+      if(this.player1Charge >= requiredSpam) {
+        this.player1Charge = 0;
+        this.throwWater(this.player1);
+      }
+
+      this.setPlayer1Counter();
+
+    } else if(this.player2Ammo < 3) {
+      this.player2Ammo++;
+      this.player2Counter.setText(this.player2Ammo);
+    }
+  },
+
+  switchWaterMode: function() {
+    this.pumpPompier = !this.pumpPompier;
+
+    if(this.pumpPompier) {
+      this.pumpModeCounter.setText('Pompe vers pompier');
+    } else {
+      this.pumpModeCounter.setText('Pompe vers Marcel');
+    }
   },
 
   waterCollision: function(waterSprite, fireSprite) {
@@ -406,6 +467,10 @@ var PhaserGame = {
   setTime: function() {
     this.timeCounter.setText(Math.floor(this.game.time.totalElapsedSeconds()));
   },
+
+  setPlayer1Counter: function() {
+    this.player1Counter.setText(this.player1Charge + ' / ' + requiredSpam);
+  }
 };
 
 /**
