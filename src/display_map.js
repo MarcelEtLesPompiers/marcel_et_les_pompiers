@@ -25,8 +25,8 @@ PhaserGame.prototype = {
 
   preload: function() {
     this.load.crossOrigin = 'anonymous';
-    
-    this.load.tilemap('map', 'json/test.json', null, Phaser.Tilemap.TILED_JSON);
+
+    this.load.tilemap('map', 'map/map.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('floor', 'img/tiles/floor.png');
     this.load.image('wall', 'img/tiles/wall.png');
 
@@ -59,7 +59,7 @@ PhaserGame.prototype = {
       } else if (this.cursors.right.isDown) {
           this.move(Phaser.RIGHT)
       }
-      
+
       if (this.cursors.up.isDown) {
          this.move(Phaser.UP)
       } else if (this.cursors.down.isDown) {
