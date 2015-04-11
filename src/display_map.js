@@ -10,6 +10,10 @@ var PhaserGame = function(game) {
 
   // Player
   this.player1 = null;
+  this.player2 = null;
+
+  // pad
+  this.pad1 = null;
 };
 
 PhaserGame.prototype = {
@@ -30,7 +34,8 @@ PhaserGame.prototype = {
     this.load.image('floor', 'img/tiles/floor.png');
     this.load.image('wall', 'img/tiles/wall.png');
 
-    this.load.image('player1', 'img/player.png');
+    this.load.image('player1', 'img/player1.png');
+    this.load.image('player2', 'img/player2.png');
   },
 
   create: function() {
@@ -44,18 +49,26 @@ PhaserGame.prototype = {
     this.player1 = this.add.sprite(150, 150, 'player1');
     this.player1.anchor.set(0.5);
 
+    this.player2 = this.add.sprite(1600, 900, 'player2');
+    this.player2.anchor.set(0.5);
+
     // physics
     this.map.setCollision(2, true, this.layer);
     this.physics.arcade.enable(this.player1);
 
     // Player's control
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    // pad
+    game.input.gamepad.start();
+    this.pad1 = game.input.gamepad.pad1;
   },
 
   update: function ()
   {
     this.physics.arcade.collide(this.player1, this.layer);
     this.checkKeys();
+    this.checkPad();
   },
 
   checkKeys: function () {
@@ -138,6 +151,25 @@ PhaserGame.prototype = {
     else if (direction === Phaser.DOWN)
     {
       this.player1.angle = 180;
+    }
+  },
+
+  checkPad: function () {
+    if (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1)
+    {
+      this.player2.x--;
+    }
+    else if (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1)
+    {
+      this.player2.x++;
+    }
+    else if (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_UP) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1)
+    {
+      this.player2.y--;
+    }
+    else if (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_DOWN) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) > 0.1)
+    {
+      this.player2.y++;
     }
   },
 };
