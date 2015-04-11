@@ -48,6 +48,40 @@
             },
          "spacing":0,
          "tileheight":90,
+         "tiles":
+            {
+             "0":
+                {
+                 "objectgroup":
+                    {
+                     "draworder":"index",
+                     "height":0,
+                     "name":"",
+                     "objects":[
+                            {
+                             "height":89,
+                             "id":0,
+                             "name":"",
+                             "properties":
+                                {
+
+                                },
+                             "rotation":0,
+                             "type":"",
+                             "visible":true,
+                             "width":90,
+                             "x":0,
+                             "y":0
+                            }],
+                     "opacity":1,
+                     "type":"objectgroup",
+                     "visible":true,
+                     "width":0,
+                     "x":0,
+                     "y":0
+                    }
+                }
+            },
          "tilewidth":90
         }],
  "tilewidth":90,
