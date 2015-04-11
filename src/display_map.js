@@ -14,7 +14,7 @@ var startFire = [
 var numStartFire = 2;
 var fireDelay = 750; // Higher is slower
 var fireRate = 2; // Divides the number of starting fires
-var waterLife = 50; // in Ms
+var waterLife = 150; // in Ms
 
 //
 // Game starts here
@@ -30,9 +30,15 @@ var PhaserGame = {
   // Player
   player1: null,
   player2: null,
+  player2Wait: false,
+  player2Delay: 500,
+
   cursors1: null,
   attack1: null,
   attack2: null,
+
+  pump: null,
+  pumpDown: false,
 
   // pad
   pad1: null,
@@ -72,11 +78,14 @@ var PhaserGame = {
 
     this.load.image('player1', 'img/player1.png');
     this.load.image('player2', 'img/player2.png');
+    this.load.image('player2Pour', 'img/Marcel_Pour.png');
 
     this.load.image('fire1', 'img/sprites/feu.png');
     this.load.image('fire2', 'img/sprites/feu2.png');
     this.load.image('fire3', 'img/sprites/feu3.png');
     this.load.image('water', 'img/sprites/water.png');
+    this.load.image('water2', 'img/sprites/Water_marcel.png');
+    this.load.image('pump', 'img/sprites/pompe.png');
 
     // music
     game.load.audio('musette', ['sound/marcel_musette.mp3', 'sound/marcel_musette.ogg']);
@@ -93,6 +102,10 @@ var PhaserGame = {
     this.map.addTilesetImage('cWall', 'cWall');
 
     this.layer = this.map.createLayer('lvl_01');
+
+    // World assets
+    this.pump = this.add.sprite(1625, 225, 'pump');
+    this.pump.anchor.set(0.5);
 
     // Fire / Water group collision
     this.water = this.add.group();
@@ -116,15 +129,13 @@ var PhaserGame = {
     // Player's control
     this.cursors = this.input.keyboard.createCursorKeys();
     this.attack1 = this.input.keyboard.addKey(Phaser.Keyboard.A);
+    this.attack2 = this.input.keyboard.addKey(Phaser.Keyboard.M);
     this.cursors1 = {
         up: this.input.keyboard.addKey(Phaser.Keyboard.Z),
         down: this.input.keyboard.addKey(Phaser.Keyboard.S),
         left: this.input.keyboard.addKey(Phaser.Keyboard.Q),
         right: this.input.keyboard.addKey(Phaser.Keyboard.D)
     };
-
-    /*game.input.gamepad.start();
-    this.pad1 = game.input.gamepad.pad1;*/
 
     // music
     this.musette = game.add.audio('musette');
@@ -151,34 +162,7 @@ var PhaserGame = {
   },
 
   checkKeys: function () {
-
     // Player 1
-    if (this.cursors.left.isDown)
-    {
-      this.move(Phaser.LEFT, this.player2);
-      this.turn_sprit(Phaser.LEFT, this.player2);
-    }
-    else if (this.cursors.right.isDown)
-    {
-      this.move(Phaser.RIGHT, this.player2);
-      this.turn_sprit(Phaser.RIGHT, this.player2);
-    }
-    else if (this.cursors.up.isDown)
-    {
-      this.move(Phaser.UP, this.player2);
-      this.turn_sprit(Phaser.UP, this.player2);
-    }
-    else if (this.cursors.down.isDown)
-    {
-      this.move(Phaser.DOWN, this.player2);
-      this.turn_sprit(Phaser.DOWN, this.player2);
-    }
-    else
-    {
-      this.move(false, this.player2);
-    }
-
-    // Player 2
     if (this.cursors1.left.isDown)
     {
       this.move(Phaser.LEFT, this.player1);
@@ -204,9 +188,50 @@ var PhaserGame = {
       this.move(false, this.player1);
     }
 
-    if (this.attack1.isDown)
-    {
+    if (this.attack1.isDown) {
       this.throwWater(this.player1);
+    }
+
+    if(this.player2Wait) {
+      return;
+    }
+
+    // Player 2
+    if (this.cursors.left.isDown)
+    {
+      this.move(Phaser.LEFT, this.player2);
+      this.turn_sprit(Phaser.LEFT, this.player2);
+    }
+    else if (this.cursors.right.isDown)
+    {
+      this.move(Phaser.RIGHT, this.player2);
+      this.turn_sprit(Phaser.RIGHT, this.player2);
+    }
+    else if (this.cursors.up.isDown)
+    {
+      this.move(Phaser.UP, this.player2);
+      this.turn_sprit(Phaser.UP, this.player2);
+    }
+    else if (this.cursors.down.isDown)
+    {
+      this.move(Phaser.DOWN, this.player2);
+      this.turn_sprit(Phaser.DOWN, this.player2);
+    }
+    else
+    {
+      this.move(false, this.player2);
+    }
+
+    if(this.attack2.isDown) {
+      if(this.player2.overlap(this.pump)) {
+        if(!this.pumpDown) {
+         this.pumpAction();
+        }
+      } else {
+        this.throwWater(this.player2);
+      }
+    } else if(this.pumpDown) {
+      this.pumpDown = false;
     }
   },
 
@@ -256,27 +281,42 @@ var PhaserGame = {
   throwWater: function(player) {
     var x = player.x;
     var y = player.y;
+    var sprite;
 
     switch(player.angle) {
       case 0 :
-        y = y - 75;
+        y = y - 70;
+        x = x - 3;
         break;
 
       case 90 :
-        x = x + 75;
+        x = x + 70;
+        y = y- 3;
         break;
 
       case -180 :
-        y = y + 75;
+        y = y + 70;
+        x = x + 3;
         break;
 
       case -90 :
-        x = x - 75;
+        x = x - 70;
+        y = y + 3;
         break;
 
     }
 
-    var water = this.water.create(x, y, 'water');
+    switch(player.key) {
+      case 'player1' :
+        sprite = 'water';
+        break;
+
+      case 'player2' :
+        sprite = 'water2';
+        break;
+    }
+
+    var water = this.water.create(x, y, sprite);
     water.anchor.set(0.5, 0.5);
     water.angle = player.angle;
 
@@ -287,6 +327,24 @@ var PhaserGame = {
         PhaserGame.water.remove(water);
       }
     });
+
+    // Extra actions for Marcel
+    if('player2' === player.key) {
+      this.player2Wait = true;
+      this.move(false, PhaserGame.player2);
+      this.player2.loadTexture('player2Pour');
+
+      this.timer.add(this.player2Delay, function() {
+        PhaserGame.player2Wait = false;
+        PhaserGame.player2.loadTexture('player2');
+      });
+    }
+  },
+
+  pumpAction: function() {
+    console.log('pump');
+
+    this.pumpDown = true;
   },
 
   waterCollision: function(waterSprite, fireSprite) {
@@ -398,8 +456,6 @@ var fire = {
     var k;
 
     PhaserGame.fire.removeAll();
-
-    console.log(this.tilesInProgress);
 
     this.tiles.map(function (coords) {
       var x = coords[0];
