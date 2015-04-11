@@ -63,7 +63,7 @@ var PhaserGame = {
   preload: function () {
     this.load.crossOrigin = 'anonymous';
 
-    this.load.tilemap('map', 'map/Lvl_01.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('map', 'map/Lvl_01.json.txt', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('Floor', 'img/tiles/sol_parquet.png');
     this.load.image('floor2', 'img/tiles/Centre.png');
     this.load.image('hWall', 'img/tiles/mur_horizontal.png');
