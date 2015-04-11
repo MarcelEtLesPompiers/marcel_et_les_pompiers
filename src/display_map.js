@@ -13,7 +13,7 @@ var startFire = [
 ];
 var numStartFire = 2;
 var fireSpeed = 1000; // Higher is slower
-var fireRate = 50; // 0 -> 100
+var fireRate = 2; // Divides the number of starting fires
 
 //
 // Game starts here
@@ -262,6 +262,7 @@ var PhaserGame = {
 var fire = {
   tiles: [],
   tilesInProgress: [],
+  tilesCandidate: [],
   interval: null,
   delay: 500,
   step: 0,
@@ -308,6 +309,11 @@ var fire = {
     });
 
     this.tilesInProgress.map(function (coords) {
+
+      if(typeof(coords) === 'undefined') {
+        return;
+      }
+
       var x = coords[0];
       var y = coords[1];
       var sprite;
@@ -364,7 +370,7 @@ var fire = {
         return;
       }
 
-      parent.tilesInProgress.push(tileCoords);
+      returnTiles.push(tileCoords);
     });
 
     return returnTiles;
@@ -394,6 +400,13 @@ var fire = {
       }
     }
 
+    for (k in this.tilesCandidate) {
+      savedTile = this.tilesCandidate[k];
+      if (coords[0] === savedTile[0] && coords[1] === savedTile[1]) {
+        return true;
+      }
+    }
+
     return false;
   },
 
@@ -408,8 +421,22 @@ var fire = {
     switch (this.step) {
       case 0 :
         this.tiles.map(function (coords) {
-          parent.propagate(coords);
+          if(typeof(coords) === 'undefined') {
+            return;
+          }
+
+          parent.tilesCandidate = parent.tilesCandidate.concat(parent.propagate(coords));
         });
+
+        var maxTiles = Math.ceil(this.tilesCandidate.length / fireRate);
+        var i;
+        for(i = 0; i < maxTiles; i++) {
+          var key = Math.floor(Math.random() * startFire.length);
+          this.tilesInProgress.push(this.tilesCandidate[key]);
+          delete this.tilesCandidate[key];
+        }
+
+        this.tilesCandidate = [];
         break;
 
       case 1 :
@@ -417,6 +444,10 @@ var fire = {
 
       case 2 :
         this.tilesInProgress.map(function (coords) {
+          if(typeof(coords) === 'undefined') {
+            return;
+          }
+
           parent.tiles.push(coords);
         });
         this.tilesInProgress = [];
