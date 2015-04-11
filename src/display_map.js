@@ -173,7 +173,7 @@ var PhaserGame = {
     this.fire_sound.volume = 100;
 
     // Starts the fire
-    fire.init();
+    fireManager.init();
 
     // Interface timeCounter
     this.timer = this.time.create(true);
@@ -223,72 +223,72 @@ var PhaserGame = {
     }
 
     // Player 1
-    if (this.cursors1.left.isDown)
-    {
-      this.move(Phaser.LEFT, this.player1);
-      this.turn_sprit(Phaser.LEFT, this.player1);
-    }
-    else if (this.cursors1.right.isDown)
-    {
-      this.move(Phaser.RIGHT, this.player1);
-      this.turn_sprit(Phaser.RIGHT, this.player1);
-    }
-    else if (this.cursors1.up.isDown)
-    {
-      this.move(Phaser.UP, this.player1);
-      this.turn_sprit(Phaser.UP, this.player1);
-    }
-    else if (this.cursors1.down.isDown)
-    {
-      this.move(Phaser.DOWN, this.player1);
-      this.turn_sprit(Phaser.DOWN, this.player1);
-    }
-    else
-    {
-      this.move(false, this.player1);
-    }
-
-    if(this.player2Wait) {
-      return;
-    }
-
-    // Player 2
-    if (this.cursors.left.isDown)
-    {
-      this.move(Phaser.LEFT, this.player2);
-      this.turn_sprit(Phaser.LEFT, this.player2);
-    }
-    else if (this.cursors.right.isDown)
-    {
-      this.move(Phaser.RIGHT, this.player2);
-      this.turn_sprit(Phaser.RIGHT, this.player2);
-    }
-    else if (this.cursors.up.isDown)
-    {
-      this.move(Phaser.UP, this.player2);
-      this.turn_sprit(Phaser.UP, this.player2);
-    }
-    else if (this.cursors.down.isDown)
-    {
-      this.move(Phaser.DOWN, this.player2);
-      this.turn_sprit(Phaser.DOWN, this.player2);
-    }
-    else
-    {
-      this.move(false, this.player2);
-    }
-
-    if(this.attack2.isDown) {
-      if(this.player2.overlap(this.pump)) {
-        if(!this.pumpDown) {
-         this.pumpAction();
-        }
-      } else {
-        this.throwWater(this.player2);
+    if(!this.player1Wait) {
+      if (this.cursors1.left.isDown)
+      {
+        this.move(Phaser.LEFT, this.player1);
+        this.turn_sprit(Phaser.LEFT, this.player1);
       }
-    } else if(this.pumpDown) {
-      this.pump.tint = 0xFFFFFF;
-      this.pumpDown = false;
+      else if (this.cursors1.right.isDown)
+      {
+        this.move(Phaser.RIGHT, this.player1);
+        this.turn_sprit(Phaser.RIGHT, this.player1);
+      }
+      else if (this.cursors1.up.isDown)
+      {
+        this.move(Phaser.UP, this.player1);
+        this.turn_sprit(Phaser.UP, this.player1);
+      }
+      else if (this.cursors1.down.isDown)
+      {
+        this.move(Phaser.DOWN, this.player1);
+        this.turn_sprit(Phaser.DOWN, this.player1);
+      }
+      else
+      {
+        this.move(false, this.player1);
+      }
+    }
+
+    if(!this.player2Wait) {
+      // Player 2
+      if (this.cursors.left.isDown)
+      {
+        this.move(Phaser.LEFT, this.player2);
+        this.turn_sprit(Phaser.LEFT, this.player2);
+      }
+      else if (this.cursors.right.isDown)
+      {
+        this.move(Phaser.RIGHT, this.player2);
+        this.turn_sprit(Phaser.RIGHT, this.player2);
+      }
+      else if (this.cursors.up.isDown)
+      {
+        this.move(Phaser.UP, this.player2);
+        this.turn_sprit(Phaser.UP, this.player2);
+      }
+      else if (this.cursors.down.isDown)
+      {
+        this.move(Phaser.DOWN, this.player2);
+        this.turn_sprit(Phaser.DOWN, this.player2);
+      }
+      else
+      {
+        this.move(false, this.player2);
+      }
+
+      if(this.attack2.isDown) {
+        if(this.player2.overlap(this.pump)) {
+          if(!this.pumpDown) {
+           this.pumpAction();
+          }
+        } else {
+          this.throwWater(this.player2);
+        }
+      } else if(this.pumpDown) {
+        this.pump.tint = 0xFFFFFF;
+        this.pumpDown = false;
+      }
     }
   },
 
@@ -328,8 +328,19 @@ var PhaserGame = {
 
     }
 
-    console.log(player.health);
     PhaserGame.updateHealth(player);
+    PhaserGame.knockBack(player);
+
+    if(0 >= player.health) {
+      PhaserGame.game.debug.geom(new Phaser.Rectangle(0, 0, 1800, 1200), 'rgba(255,0,0,0.3)', true);
+      PhaserGame.player1Wait = true;
+      PhaserGame.player2Wait = true;
+      PhaserGame.move(false, PhaserGame.player1);
+      PhaserGame.move(false, PhaserGame.player2);
+      PhaserGame.timer.stop();
+      PhaserGame.timer.clearPendingEvents();
+      fireManager.stop();
+    }
   },
 
   updateHealth: function(player) {
@@ -346,7 +357,7 @@ var PhaserGame = {
     }
 
     if(3 === player.health) {
-      for(i = 0; i < 2; i++) {
+      for(i = 0; i < 3; i++) {
         var heart = group.next();
           heart.loadTexture('heart');
       }
@@ -360,7 +371,7 @@ var PhaserGame = {
         }
       }
     } else if(1 === player.health) {
-      for(i = 0; i < 2; i++) {
+      for(i = 0; i < 3; i++) {
         var heart = group.next();
         if('heart-2' === heart.name) {
           heart.loadTexture('heart');
@@ -369,10 +380,58 @@ var PhaserGame = {
         }
       }
     } else {
-      for(i = 0; i < 2; i++) {
+      for(i = 0; i < 3; i++) {
         var heart = group.next();
-          heart.loadTexture('heartEmpty');
+        heart.loadTexture('heartEmpty');
       }
+    }
+  },
+
+  knockBack: function(player) {
+    switch(player.key) {
+      case 'player1' :
+        PhaserGame.player1Wait = true;
+        PhaserGame.timer.add(250, function() {
+          PhaserGame.player1Wait = false;
+        });
+        PhaserGame.timer.add(100, function() {
+          PhaserGame.move(false, PhaserGame.player1);
+        });
+        break;
+
+      case 'player2' :
+        PhaserGame.player2Wait = true;
+        PhaserGame.timer.add(250, function() {
+          PhaserGame.player2Wait = false;
+        });
+        PhaserGame.timer.add(100, function() {
+          PhaserGame.move(false, PhaserGame.player2);
+        });
+    }
+
+    PhaserGame.move(false, player);
+
+    switch(player.angle) {
+      case 0 :
+        player.body.velocity.x = 0;
+        player.body.velocity.y = 500;
+        break;
+
+      case 90 :
+        player.body.velocity.x = -500;
+        player.body.velocity.y = 0;
+        break;
+
+      case -180 :
+        player.body.velocity.x = 0;
+        player.body.velocity.y = -500;
+        break;
+
+      case -90 :
+        player.body.velocity.x = 500;
+        player.body.velocity.y = 0;
+        break;
+
     }
   },
 
@@ -405,11 +464,6 @@ var PhaserGame = {
       case Phaser.LEFT :
         player.body.velocity.x = -speed;
         player.body.velocity.y = 0;
-        break;
-
-      case Phaser.LEFT + '-' + Phaser.UP :
-        player.body.velocity.x = -speed;
-        player.body.velocity.y = -speed;
         break;
 
       default :
@@ -527,11 +581,11 @@ var PhaserGame = {
 
   waterCollision: function(waterSprite, fireSprite) {
     var removed = false;
-    removed = fire.extinguish([fireSprite.x, fireSprite.y]) || removed;
+    removed = fireManager.extinguish([fireSprite.x, fireSprite.y]) || removed;
 
     if(removed)
     {
-      fire.display();
+      fireManager.display();
     }
   },
 
@@ -595,7 +649,7 @@ var PhaserGame = {
  *
  * @type object
  */
-var fire = {
+var fireManager = {
   tiles: [],
   tilesInProgress: [],
   tilesCandidate: [],
@@ -623,7 +677,7 @@ var fire = {
     this.display();
     this.timer = PhaserGame.time.create(true);
     this.timer.loop(this.delay, function () {
-      fire.tick();
+      fireManager.tick();
     });
     this.timer.start();
   },
@@ -839,6 +893,11 @@ var fire = {
     }
 
     return false;
+  },
+
+  stop: function() {
+    this.timer.stop();
+    this.timer.clearPendingEvents();
   }
 };
 
