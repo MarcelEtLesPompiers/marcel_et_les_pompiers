@@ -45,7 +45,7 @@ PhaserGame.prototype = {
     this.player1.anchor.set(0.5);
 
     // physics
-    this.map.setCollision(20, true, this.layer);
+    this.map.setCollision(2, true, this.layer);
     this.physics.arcade.enable(this.player1);
 
     // Player's control
