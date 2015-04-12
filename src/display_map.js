@@ -31,6 +31,10 @@ var PhaserGame = {
   layer: null,
   gridsize: 90,
 
+  //ecran
+  in_game: null,
+  ecran_titre: null,
+
   // Player
   player1: null,
   player2: null,
@@ -84,6 +88,8 @@ var PhaserGame = {
   preload: function () {
     this.load.crossOrigin = 'anonymous';
 
+    this.load.image('ecran_titre', 'img/screen/ecran_titre.png');
+
     this.load.tilemap('map', 'map/Lvl_01.json.txt', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('Floor', 'img/tiles/sol_parquet.png');
     this.load.image('floor2', 'img/tiles/Centre.png');
@@ -108,10 +114,15 @@ var PhaserGame = {
     // music
     game.load.audio('musette', ['sound/marcel_musette.mp3', 'sound/marcel_musette.ogg']);
     game.load.audio('fire_sound', ['sound/fire_sound.ogg']);
-
   },
 
   create: function () {
+    this.ecran_titre = this.add.sprite(0, 0, 'ecran_titre');
+    this.in_game = false;
+    this.pumpSwitchKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+  },
+
+  lauch_game: function () {
     this.map = this.add.tilemap('map');
     this.map.addTilesetImage('Floor', 'Floor');
     this.map.addTilesetImage('floor2', 'floor2');
@@ -202,13 +213,20 @@ var PhaserGame = {
   },
 
   update: function () {
-    this.physics.arcade.collide(this.player1, this.layer);
-    this.physics.arcade.collide(this.player2, this.layer);
-    this.checkKeys();
-    this.physics.arcade.overlap(this.water, this.fire, this.waterCollision);
+    if (this.in_game)
+    {
+      this.physics.arcade.collide(this.player1, this.layer);
+      this.physics.arcade.collide(this.player2, this.layer);
+      this.checkKeys();
+      this.physics.arcade.overlap(this.water, this.fire, this.waterCollision);
 
-    this.physics.arcade.overlap(this.player1, this.fire, this.damagePlayer);
-    this.physics.arcade.overlap(this.player2, this.fire, this.damagePlayer);
+      this.physics.arcade.overlap(this.player1, this.fire, this.damagePlayer);
+      this.physics.arcade.overlap(this.player2, this.fire, this.damagePlayer);
+    }
+    else
+    {
+      this.checkSpace()
+    }
   },
 
   checkKeys: function () {
@@ -289,6 +307,15 @@ var PhaserGame = {
         this.pump.tint = 0xFFFFFF;
         this.pumpDown = false;
       }
+    }
+  },
+
+  checkSpace: function ()
+  {
+    if (this.pumpSwitchKey.isDown)
+    {
+      this.lauch_game();
+      this.in_game = true;
     }
   },
 
