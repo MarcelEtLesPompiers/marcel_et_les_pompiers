@@ -24,9 +24,10 @@ var startObstacles = [
   [16,9],
   [18,6],
   [13,3],
+  [13,2],
 ];
 
-var numStartFire = 2;
+var numStartFire = 4;
 var fireDelay = 750; // Higher is slower
 var fireRate = 2; // Divides the number of starting fires
 var waterLife = 150; // in Ms
@@ -321,7 +322,7 @@ var PhaserGame = {
     this.player1.anchor.set(0.5);
     this.player1.health = 3;
     this.player1.angle = -180;
-    this.player2 = this.add.sprite(1600, 900, 'player2');
+    this.player2 = this.add.sprite(1550, 300, 'player2');
     this.player2.anchor.set(0.5);
     this.player2Invincible = false;
     this.player2.health = 3;
