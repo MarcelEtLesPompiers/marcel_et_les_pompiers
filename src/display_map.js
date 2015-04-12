@@ -549,6 +549,10 @@ var PhaserGame = {
       return;
     }
 
+    if('fire1' !== fire.key) {
+      return;
+    }
+
     player.health--;
     player.alpha = 0.75;
 
