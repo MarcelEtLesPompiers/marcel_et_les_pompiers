@@ -6,19 +6,34 @@
 
 // Starting fire, picked at random
 var startFire = [
-  [5, 4],
-  [3, 6],
-  [15, 8],
-  [4, 10],
-  [16, 2],
-  [8, 2],
+  [1,6],
+  [5,4],
+  [9,7],
+  [13,9],
+  [18,7],
+  [12,3],
 ];
+
+var startObstacles = [
+  [3,4],
+  [7,2],
+  [11,8],
+  [11,9],
+  [16,7],
+  [16,8],
+  [16,9],
+  [18,6],
+  [13,3],
+];
+
 var numStartFire = 2;
 var fireDelay = 750; // Higher is slower
 var fireRate = 2; // Divides the number of starting fires
 var waterLife = 150; // in Ms
 var requiredSpam = 5;
 var hitInvincibility = 1500; // in Ms
+var obstacleHealth = 4; // number of hits to clear an obstacle
+var player1Range = 120; // range in pixel of the axe attack (an attack starts from centerpoint to centerpoint)
 
 //
 // Game starts here
@@ -29,6 +44,8 @@ var PhaserGame = {
   // map
   map: null,
   layer: null,
+  layer2: null,
+  layer3: null,
   gridsize: 90,
 
   //ecran
@@ -50,6 +67,7 @@ var PhaserGame = {
 
   cursors1: null,
   attack1: null,
+  attack1Up: false,
   attack2: null,
 
   pump: null,
@@ -77,6 +95,11 @@ var PhaserGame = {
   lifePlayer1: null,
   lifePlayer2: null,
 
+  /**
+   * Phaser init
+   *
+   * @returns {undefined}
+   */
   init: function () {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;
@@ -85,18 +108,88 @@ var PhaserGame = {
     this.physics.startSystem(Phaser.Physics.ARCADE);
   },
 
+  /**
+   * Loads the assets
+   *
+   * @returns {undefined}
+   */
   preload: function () {
     this.load.crossOrigin = 'anonymous';
 
     this.load.image('ecran_titre', 'img/screen/ecran_titre.png');
 
-    this.load.tilemap('map', 'map/Lvl_01.json.txt', null, Phaser.Tilemap.TILED_JSON);
-    this.load.image('Floor', 'img/tiles/sol_parquet.png');
-    this.load.image('floor2', 'img/tiles/Centre.png');
-    this.load.image('hWall', 'img/tiles/mur_horizontal.png');
-    this.load.image('vWall', 'img/tiles/mur_vertical.png');
-    this.load.image('cWall', 'img/tiles/mur_cross.png');
+    this.load.tilemap('map', 'map/lvl.json.txt', null, Phaser.Tilemap.TILED_JSON);
 
+    // Floor tiles
+    this.load.image('parquetDroite', 'img/sols/parquetDroite.png');
+    this.load.image('Porte', 'img/sols/Porte.png');
+    this.load.image('sol_carrelage', 'img/sols/sol_carrelage.png');
+    this.load.image('BurnWoodenFloor1', 'img/sols/BurnWoodenFloor1.png');
+    this.load.image('BurnWoodenFloor2', 'img/sols/BurnWoodenFloor2.png');
+    this.load.image('BurnWoodenFloor3', 'img/sols/BurnWoodenFloor3.png');
+
+    // Wall tiles
+    this.load.image('mur_border_bottom', 'img/Walls/mur_border_bottom.png');
+    this.load.image('mur_border_left', 'img/Walls/mur_border_left.png');
+    this.load.image('mur_border_link_bottom', 'img/Walls/mur_border_link_bottom.png');
+    this.load.image('mur_border_link_left', 'img/Walls/mur_border_link_left.png');
+    this.load.image('mur_border_link_right', 'img/Walls/mur_border_link_right.png');
+    this.load.image('mur_border_link_top', 'img/Walls/mur_border_link_top.png');
+    this.load.image('mur_border_right', 'img/Walls/mur_border_right.png');
+    this.load.image('mur_border_top', 'img/Walls/mur_border_top.png');
+    this.load.image('mur_coin1', 'img/Walls/mur_coin1.png');
+    this.load.image('mur_coin2', 'img/Walls/mur_coin2.png');
+    this.load.image('mur_coin3', 'img/Walls/mur_coin3.png');
+    this.load.image('mur_coin4', 'img/Walls/mur_coin4.png');
+    this.load.image('mur_cross', 'img/Walls/mur_cross.png');
+    this.load.image('mur_end_bottom', 'img/Walls/mur_end_bottom.png');
+    this.load.image('mur_end_left', 'img/Walls/mur_end_left.png');
+    this.load.image('mur_end_right', 'img/Walls/mur_end_right.png');
+    this.load.image('mur_end_top', 'img/Walls/mur_end_top.png');
+    this.load.image('mur_horizontal', 'img/Walls/mur_horizontal.png');
+    this.load.image('mur_horizontal2', 'img/Walls/mur_horizontal2.png');
+    this.load.image('mur_horizontal3', 'img/Walls/mur_horizontal3.png');
+    this.load.image('mur_L1', 'img/Walls/mur_L1.png');
+    this.load.image('mur_L2', 'img/Walls/mur_L2.png');
+    this.load.image('mur_L3', 'img/Walls/mur_L3.png');
+    this.load.image('mur_L4', 'img/Walls/mur_L4.png');
+    this.load.image('mur_vertical', 'img/Walls/mur_vertical.png');
+    this.load.image('mur_vertical2', 'img/Walls/mur_vertical2.png');
+    this.load.image('wall_Full', 'img/Walls/wall_Full.png');
+    this.load.image('mur_border_coin2', 'img/Walls/mur_border_coin2.png');
+
+    // Carpet tiles
+    this.load.image('Centre', 'img/Carpets/Centre.png');
+    this.load.image('centreBas', 'img/Carpets/centreBas.png');
+    this.load.image('centreBas2', 'img/Carpets/centreBas2.png');
+    this.load.image('centreDroit', 'img/Carpets/centreDroit.png');
+    this.load.image('centreGauche', 'img/Carpets/centreGauche.png');
+    this.load.image('centreHaut', 'img/Carpets/centreHaut.png');
+    this.load.image('centreHaut2', 'img/Carpets/centreHaut2.png');
+    this.load.image('coinBasDroit', 'img/Carpets/coinBasDroit.png');
+    this.load.image('coinBasDroit2', 'img/Carpets/coinBasDroit2.png');
+    this.load.image('coinBasGauche', 'img/Carpets/coinBasGauche.png');
+    this.load.image('coinHautDroit', 'img/Carpets/coinHautDroit.png');
+    this.load.image('coinHautDroit2', 'img/Carpets/coinHautDroit2.png');
+    this.load.image('coinHautGacuhe', 'img/Carpets/coinHautGacuhe.png');
+    this.load.image('coinHautGauche', 'img/Carpets/coinHautGauche.png');
+    this.load.image('coinsBasGauche', 'img/Carpets/coinsBasGauche.png');
+
+    // Furniture
+    this.load.image('Atari_Idle', 'img/Furnitures/Atari_Idle.png');
+    this.load.image('Bed_Iddle2', 'img/Furnitures/Bed_Iddle2.png');
+    this.load.image('Canape_Idle', 'img/Furnitures/Canape_Idle.png');
+    this.load.image('ChairEgg_Idle2', 'img/Furnitures/ChairEgg_Idle2.png');
+    this.load.image('ChairEgg_Idle7', 'img/Furnitures/ChairEgg_Idle7.png');
+    this.load.image('Fauteuil_Idle2', 'img/Furnitures/Fauteuil_Idle2.png');
+    this.load.image('Fauteuil_Idle6', 'img/Furnitures/Fauteuil_Idle6.png');
+    this.load.image('Fauteuil_Idle7', 'img/Furnitures/Fauteuil_Idle7.png');
+    this.load.image('lava_lamp', 'img/Furnitures/lava_lamp.png');
+    this.load.image('Table_Idle', 'img/Furnitures/Table_Idle.png');
+    this.load.image('Table_Idle2', 'img/Furnitures/Table_Idle2.png');
+    this.load.image('wc', 'img/Furnitures/wc.png');
+
+    // Players
     this.load.image('player1', 'img/player1.png');
     this.load.image('player2', 'img/player2.png');
     this.load.image('player2Pour', 'img/Marcel_Pour.png');
@@ -111,11 +204,19 @@ var PhaserGame = {
     this.load.image('heart', 'img/hud/Heart.png');
     this.load.image('heartEmpty', 'img/hud/heartEmpty.png');
 
+    this.load.image('debris', 'img/sprites/Debris.png');
+    this.load.image('debris2', 'img/sprites/Debris2.png');
+
     // music
     game.load.audio('musette', ['sound/marcel_musette.mp3', 'sound/marcel_musette.ogg']);
     game.load.audio('fire_sound', ['sound/fire_sound.ogg']);
   },
 
+  /**
+   * First game's initialisation
+   *
+   * @returns {undefined}
+   */
   create: function () {
     this.ecran_titre = this.add.sprite(0, 0, 'ecran_titre');
     this.in_game = false;
@@ -124,13 +225,72 @@ var PhaserGame = {
 
   lauch_game: function () {
     this.map = this.add.tilemap('map');
-    this.map.addTilesetImage('Floor', 'Floor');
-    this.map.addTilesetImage('floor2', 'floor2');
-    this.map.addTilesetImage('hWall', 'hWall');
-    this.map.addTilesetImage('vWall', 'vWall');
-    this.map.addTilesetImage('cWall', 'cWall');
+    this.map.addTilesetImage("Wooden_floor", "parquetDroite");
+    this.map.addTilesetImage("BurnWoodenFloor1", "BurnWoodenFloor1");
+    this.map.addTilesetImage("BurnWoodenFloor2", "BurnWoodenFloor2");
+    this.map.addTilesetImage("BurnWoodenFloor3", "BurnWoodenFloor3");
+    this.map.addTilesetImage("hWall", "mur_horizontal");
+    this.map.addTilesetImage("vWall", "mur_vertical");
+    this.map.addTilesetImage("cWall", "mur_cross");
+    this.map.addTilesetImage("vWall_End", "mur_end_bottom");
+    this.map.addTilesetImage("vWall_Top", "mur_end_top");
+    this.map.addTilesetImage("hWall_L", "mur_end_left");
+    this.map.addTilesetImage("hWall_R", "mur_end_right");
+    this.map.addTilesetImage("hWall_Cross_Top", "mur_horizontal2");
+    this.map.addTilesetImage("hWall_Cross_End", "mur_horizontal3");
+    this.map.addTilesetImage("vWall_Cross_L", "mur_vertical");
+    this.map.addTilesetImage("vWall_Cross_R", "mur_vertical2");
+    this.map.addTilesetImage("Corner1", "mur_coin1");
+    this.map.addTilesetImage("Corner2", "mur_coin2");
+    this.map.addTilesetImage("Corner3", "mur_coin3");
+    this.map.addTilesetImage("Corner4", "mur_coin4");
+    this.map.addTilesetImage("hWall_Border_Top", "mur_border_top");
+    this.map.addTilesetImage("hWall_Border_End", "mur_border_bottom");
+    this.map.addTilesetImage("hWall_Border_L", "mur_border_left");
+    this.map.addTilesetImage("vWall_Border_R", "mur_border_right");
+    this.map.addTilesetImage("Wall_Full", "wall_Full");
+    this.map.addTilesetImage("paving", "sol_carrelage");
+    this.map.addTilesetImage("wCorner", "mur_border_coin2");
+    this.map.addTilesetImage("wCorner2c", "mur_L2");
+    this.map.addTilesetImage("fDoor", "Porte");
+    this.map.addTilesetImage("Carpet1", "Centre");
+    this.map.addTilesetImage("wCorner1", "mur_L1");
+    this.map.addTilesetImage("wCorner2", "mur_L2");
+    this.map.addTilesetImage("wCorner3", "mur_L3");
+    this.map.addTilesetImage("wCorner4", "mur_L4");
+    this.map.addTilesetImage("Full_corner1", "mur_border_link_bottom");
+    this.map.addTilesetImage("full_corner2", "mur_border_link_left");
+    this.map.addTilesetImage("full_corner3", "mur_border_link_right");
+    this.map.addTilesetImage("full_corner4", "mur_border_link_top");
+
+    this.map.addTilesetImage("carpetCoinTopLeft", "coinHautGauche");
+    this.map.addTilesetImage("carpetCenterTop", "centreHaut");
+    this.map.addTilesetImage("carpetCoinTopRight", "coinHautDroit");
+    this.map.addTilesetImage("carpetCenter", "Centre");
+    this.map.addTilesetImage("carpetSideRight", "centreDroit");
+    this.map.addTilesetImage("carpetSideLeft", "centreGauche");
+    this.map.addTilesetImage("carpetCoinBotLeft", "coinsBasGauche");
+    this.map.addTilesetImage("carpetCenterBot", "centreBas");
+    this.map.addTilesetImage("carpetCoinBotRight", "coinBasDroit");
+    this.map.addTilesetImage("carpet2CoinTopLeft", "coinHautGacuhe");
+
+
+    this.map.addTilesetImage("Egg", "ChairEgg_Idle2");
+    this.map.addTilesetImage("bed", "Bed_Iddle2");
+    this.map.addTilesetImage("table", "Table_Idle2");
+    this.map.addTilesetImage("table2", "Table_Idle");
+    this.map.addTilesetImage("lamp", "lava_lamp");
+    this.map.addTilesetImage("computer", "Atari_Idle");
+    this.map.addTilesetImage("chair", "Fauteuil_Idle2");
+    this.map.addTilesetImage("chair2", "Fauteuil_Idle6");
+    this.map.addTilesetImage("chair3", "Fauteuil_Idle7");
+    this.map.addTilesetImage("egg2", "ChairEgg_Idle7");
+    this.map.addTilesetImage("canap", "Canape_Idle");
+    this.map.addTilesetImage("Wc", "wc");
 
     this.layer = this.map.createLayer('lvl_01');
+    this.layer2 = this.map.createLayer('Carpet');
+    this.layer3 = this.map.createLayer('Wall');
 
     // World assets
     this.pump = this.add.sprite(1625, 225, 'pump');
@@ -152,6 +312,7 @@ var PhaserGame = {
     this.player1Invincible = false;
     this.player1.anchor.set(0.5);
     this.player1.health = 3;
+    this.player1.angle = -180;
     this.player2 = this.add.sprite(1600, 900, 'player2');
     this.player2.anchor.set(0.5);
     this.player2Invincible = false;
@@ -184,7 +345,10 @@ var PhaserGame = {
     this.fire_sound.volume = 100;
 
     // Starts the fire
-    fireManager.init();
+    //fireManager.init();
+
+    // Places obstacles
+    obstacles.init();
 
     // Interface timeCounter
     this.timer = this.time.create(true);
@@ -212,6 +376,11 @@ var PhaserGame = {
     }
   },
 
+  /**
+   * Frame update
+   *
+   * @returns {undefined}
+   */
   update: function () {
     if (this.in_game)
     {
@@ -229,6 +398,12 @@ var PhaserGame = {
     }
   },
 
+  /**
+   * Both players control
+   * For each player, the 'wait' variable must be false to allow movement.
+   *
+   * @returns {undefined}
+   */
   checkKeys: function () {
     //Common
     if(this.pumpSwitchKey.isDown) {
@@ -266,10 +441,19 @@ var PhaserGame = {
       {
         this.move(false, this.player1);
       }
+
+      if(this.attack1.isDown) {
+        if(this.attack1Up) {
+          this.player1Attack();
+          this.attack1Up = false;
+        }
+      } else {
+        this.attack1Up = true;
+      }
     }
 
+    // Player 2
     if(!this.player2Wait) {
-      // Player 2
       if (this.cursors.left.isDown)
       {
         this.move(Phaser.LEFT, this.player2);
@@ -319,6 +503,13 @@ var PhaserGame = {
     }
   },
 
+  /**
+   * Damage a player
+   *
+   * @param {type} player
+   * @param {type} fire
+   * @returns {undefined}
+   */
   damagePlayer: function(player, fire) {
     if('player1' === player.key && PhaserGame.player1Invincible) {
       return;
@@ -327,13 +518,7 @@ var PhaserGame = {
     }
 
     player.health--;
-
-    if(0 >= player.health) {
-      // DED :(
-      //return
-    }
-
-    player.alpha = 0.5;
+    player.alpha = 0.75;
 
     switch(player.key) {
       case 'player1' :
@@ -352,7 +537,6 @@ var PhaserGame = {
           PhaserGame.player2.alpha = 1;
         });
         break;
-
     }
 
     PhaserGame.updateHealth(player);
@@ -360,16 +544,32 @@ var PhaserGame = {
 
     if(0 >= player.health) {
       PhaserGame.game.debug.geom(new Phaser.Rectangle(0, 0, 1800, 1200), 'rgba(255,0,0,0.3)', true);
-      PhaserGame.player1Wait = true;
-      PhaserGame.player2Wait = true;
-      PhaserGame.move(false, PhaserGame.player1);
-      PhaserGame.move(false, PhaserGame.player2);
-      PhaserGame.timer.stop();
-      PhaserGame.timer.clearPendingEvents();
-      fireManager.stop();
+      this.endGame();
     }
   },
 
+  /**
+   * Stops the game, blocks controls and clear all the timers.
+   *
+   * @returns {undefined}
+   */
+  endGame: function() {
+    PhaserGame.player1Wait = true;
+    PhaserGame.player2Wait = true;
+    PhaserGame.move(false, PhaserGame.player1);
+    PhaserGame.move(false, PhaserGame.player2);
+    PhaserGame.timer.stop();
+    PhaserGame.timer.clearPendingEvents();
+
+    fireManager.stop();
+  },
+
+  /**
+   * Update one of the healths HUD according to the player's health.
+   *
+   * @param {sprite} player
+   * @returns {undefined}
+   */
   updateHealth: function(player) {
     var group;
     var i;
@@ -414,6 +614,12 @@ var PhaserGame = {
     }
   },
 
+  /**
+   * Pushes the player back and stuns him.
+   *
+   * @param {sprite} player
+   * @returns {undefined}
+   */
   knockBack: function(player) {
     switch(player.key) {
       case 'player1' :
@@ -550,7 +756,6 @@ var PhaserGame = {
         x = x - 70;
         y = y + 3;
         break;
-
     }
 
     switch(player.key) {
@@ -576,6 +781,24 @@ var PhaserGame = {
     });
   },
 
+  /**
+   * Fireman's attack
+   * - Blocks movement for a little while
+   * - Check for nearby obstacles
+   * - Damages the obstacle is found
+   *
+   * @returns {undefined}
+   */
+  player1Attack: function() {
+    this.player1Wait = true;
+    this.move(false, this.player1);
+    this.timer.add(250, function() {
+      PhaserGame.player1Wait = false;
+    });
+
+    obstacles.checkHits(this.player1);
+  },
+
   pumpAction: function() {
     this.pumpDown = true;
 
@@ -596,6 +819,11 @@ var PhaserGame = {
     }
   },
 
+  /**
+   * Invert the fireman's or marcel water mode
+   *
+   * @returns {undefined}
+   */
   switchWaterMode: function() {
     this.pumpPompier = !this.pumpPompier;
 
@@ -606,6 +834,13 @@ var PhaserGame = {
     }
   },
 
+  /**
+   * Handles the collision between one water sprite and a fire.
+   *
+   * @param {sprite} waterSprite
+   * @param {sprite} fireSprite
+   * @returns {undefined}
+   */
   waterCollision: function(waterSprite, fireSprite) {
     var removed = false;
     removed = fireManager.extinguish([fireSprite.x, fireSprite.y]) || removed;
@@ -636,25 +871,11 @@ var PhaserGame = {
     }
   },
 
-  checkPad: function () {
-    if (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1)
-    {
-      this.player2.x--;
-    }
-    else if (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1)
-    {
-      this.player2.x++;
-    }
-    else if (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_UP) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1)
-    {
-      this.player2.y--;
-    }
-    else if (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_DOWN) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) > 0.1)
-    {
-      this.player2.y++;
-    }
-  },
-
+  /**
+   * Start the main game's timer
+   *
+   * @returns {undefined}
+   */
   startTimer: function() {
     this.timer.loop(1000, function() {
       PhaserGame.setTime();
@@ -662,6 +883,11 @@ var PhaserGame = {
     this.timer.start();
   },
 
+  /**
+   * Update the HUD timer
+   *
+   * @returns {undefined}
+   */
   setTime: function() {
     this.timeCounter.setText(Math.floor(this.game.time.totalElapsedSeconds()));
   },
@@ -716,7 +942,6 @@ var fireManager = {
    */
   display: function () {
     var step = this.step;
-    var k;
 
     PhaserGame.fire.removeAll();
 
@@ -925,6 +1150,120 @@ var fireManager = {
   stop: function() {
     this.timer.stop();
     this.timer.clearPendingEvents();
+  }
+};
+
+/**
+ * Obstaces management
+ * - Adds obstacles ot the play field.
+ * - Check if the player is in range of hitting.
+ * - Delete destoryed obstacles
+ */
+var obstacles = {
+
+  group: null,
+
+  init: function() {
+    var parent = this;
+    this.group = PhaserGame.add.group();
+    this.group.physicsBodyType = Phaser.Physics.ARCADE;
+    this.group.enableBody = true;
+
+    startObstacles.map(function(coords) {
+      var texture = Math.random() > 0.5 ? 'debris' : 'debris2';
+      var obstacle = parent.group.create(45 + (coords[0] * 90), 45 + (coords[1] * 90), texture);
+      obstacle.health = obstacleHealth;
+      obstacle.body.immovable = true;
+      obstacle.exists = true;
+      obstacle.anchor.set(0.5);
+    });
+  },
+
+  /**
+   * Search for obstacles located withing a box extended from the player
+   *
+   * @param {type} player
+   * @returns {undefined}
+   */
+  checkHits: function(player) {
+    var box;
+
+    if(0 === this.group.length) {
+      return;
+    }
+
+    switch(player.angle) {
+      case 0 :
+        box = {
+          x1: player.x - 40,
+          x2: player.x + 40,
+          y1: player.y - player1Range,
+          y2: player.y,
+        };
+        break;
+
+      case -180 :
+        box = {
+          x1: player.x - 40,
+          x2: player.x + 40,
+          y1: player.y,
+          y2: player.y + player1Range,
+        };
+        break;
+
+      case 90 :
+        box = {
+          x1: player.x,
+          x2: player.x + player1Range,
+          y1: player.y - 40,
+          y2: player.y + 40,
+        };
+        break;
+      case -90 :
+        box = {
+          x1: player.x - player1Range,
+          x2: player.x,
+          y1: player.y - 40,
+          y2: player.y + 40,
+        };
+    }
+
+    this.group.children.map(function(obstacle) {
+      if(
+        obstacle.x >= box.x1 &&
+        obstacle.x <= box.x2 &&
+        obstacle.y >= box.y1 &&
+        obstacle.y <= box.y2
+      ) {
+        obstacles.damage(obstacle);
+      }
+    });
+
+  },
+
+  damage: function(obstacle) {
+    obstacle.health--;
+
+    if(0 >= obstacle.health) {
+      this.group.remove(obstacle, true);
+      return;
+    }
+    obstacle.alpha = 0.5;
+
+    PhaserGame.timer.add(150, function() {
+      obstacles.group.children.map(function(obstacle) {
+        obstacle.alpha = 1;
+      });
+    });
+  },
+
+  /**
+   * Deletes all the obstacles
+   *
+   * @returns {undefined}
+   */
+  cleanup: function() {
+    this.group.removeAll(true);
   }
 };
 

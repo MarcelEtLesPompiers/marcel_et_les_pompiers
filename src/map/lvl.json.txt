@@ -1,0 +1,957 @@
+{ "height":12,
+ "layers":[
+        {
+         "data":[0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 22, 22, 22, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 62, 22, 22, 22, 1, 1, 1, 0, 0, 1, 1, 1, 1, 63, 1, 1, 63, 1, 1, 1, 1, 22, 22, 22, 1, 62, 63, 0, 0, 64, 1, 1, 1, 1, 1, 1, 1, 1, 63, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 64, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 22, 22, 1, 1, 1, 1, 1, 63, 64, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 22, 22, 22, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 22, 22, 22, 64, 1, 1, 64, 1, 1, 64, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":12,
+         "name":"lvl_01",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":20,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 35, 36, 37, 0, 44, 44, 0, 44, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 38, 39, 0, 44, 44, 0, 44, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 42, 43, 0, 44, 44, 0, 44, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 35, 36, 36, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 26, 26, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 26, 26, 39, 0, 44, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 26, 26, 39, 0, 44, 44, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 41, 42, 42, 43, 0, 44, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":12,
+         "name":"Carpet",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":false,
+         "width":20,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[16, 17, 0, 17, 31, 17, 17, 31, 17, 17, 31, 17, 17, 17, 17, 13, 21, 21, 21, 21, 19, 0, 0, 0, 3, 57, 58, 5, 56, 45, 3, 50, 0, 0, 54, 23, 17, 17, 17, 13, 19, 0, 0, 0, 3, 0, 0, 0, 0, 0, 12, 2, 8, 0, 0, 0, 0, 0, 0, 20, 19, 55, 0, 0, 3, 0, 0, 6, 0, 0, 3, 61, 0, 0, 0, 0, 0, 0, 0, 20, 33, 2, 8, 0, 3, 0, 0, 3, 0, 0, 28, 10, 30, 0, 0, 0, 0, 0, 0, 20, 19, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 3, 28, 2, 2, 2, 2, 8, 0, 20, 19, 0, 29, 2, 27, 0, 0, 3, 0, 0, 0, 3, 46, 47, 0, 0, 54, 0, 0, 20, 19, 0, 3, 0, 0, 0, 0, 3, 0, 0, 0, 5, 48, 49, 0, 0, 0, 0, 0, 20, 19, 0, 28, 8, 0, 0, 29, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 19, 0, 0, 0, 0, 29, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 19, 51, 0, 0, 0, 3, 60, 0, 0, 0, 0, 6, 0, 0, 0, 0, 55, 0, 0, 20, 14, 18, 18, 18, 18, 34, 18, 18, 18, 18, 18, 34, 18, 18, 18, 18, 18, 18, 18, 15],
+         "height":12,
+         "name":"Wall",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":20,
+         "x":0,
+         "y":0
+        }],
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "properties":
+    {
+
+    },
+ "renderorder":"right-down",
+ "tileheight":90,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "image":"..\/Assets graphiques\/sols\/parquetDroite.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"Wooden_floor",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":2,
+         "image":"..\/Assets graphiques\/Murs\/mur_horizontal.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"hWall",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":3,
+         "image":"..\/Assets graphiques\/Murs\/mur_vertical.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"vWall",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":4,
+         "image":"..\/Assets graphiques\/Murs\/mur_cross.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"cWall",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":5,
+         "image":"..\/Assets graphiques\/Murs\/mur_end_bottom.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"vWall_End",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":6,
+         "image":"..\/Assets graphiques\/Murs\/mur_end_top.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"vWall_Top",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":7,
+         "image":"..\/Assets graphiques\/Murs\/mur_end_left.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"hWall_L",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":8,
+         "image":"..\/Assets graphiques\/Murs\/mur_end_right.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"hWall_R",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":9,
+         "image":"..\/Assets graphiques\/Murs\/mur_horizontal2.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"hWall_Cross_Top",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":10,
+         "image":"..\/Assets graphiques\/Murs\/mur_horizontal3.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"hWall_Cross_End",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":11,
+         "image":"..\/Assets graphiques\/Murs\/mur_vertical1.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"vWall_Cross_L",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":12,
+         "image":"..\/Assets graphiques\/Murs\/Murs Ok\/mur_vertical2.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"vWall_Cross_R",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":13,
+         "image":"..\/Assets graphiques\/Murs\/mur_coin1.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"Corner1",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":14,
+         "image":"..\/Assets graphiques\/Murs\/mur_coin2.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"Corner2",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":15,
+         "image":"..\/Assets graphiques\/Murs\/mur_coin3.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"Corner3",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":16,
+         "image":"..\/Assets graphiques\/Murs\/mur_coin4.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"Corner4",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":17,
+         "image":"..\/Assets graphiques\/Murs\/mur_border_top.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"hWall_Border_Top",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":18,
+         "image":"..\/Assets graphiques\/Murs\/mur_border_bottom.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"hWall_Border_End",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":19,
+         "image":"..\/Assets graphiques\/Murs\/mur_border_left.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"hWall_Border_L",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":20,
+         "image":"..\/Assets graphiques\/Murs\/mur_border_right.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"vWall_Border_R",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":21,
+         "image":"..\/Assets graphiques\/Murs\/wall_Full.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"Wall_Full",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":22,
+         "image":"..\/Assets graphiques\/sols\/sol_carrelage.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"paving",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":23,
+         "image":"..\/Assets graphiques\/Murs\/Murs Ok\/mur_border_coin2.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"wCorner",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":24,
+         "image":"..\/Assets graphiques\/Murs\/Murs Ok\/mur_border_coin1.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"wCorner2",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":25,
+         "image":"..\/Assets graphiques\/sols\/POrte\/Porte.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"fDoor",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":26,
+         "image":"..\/Assets graphiques\/sols\/Moquette\/Moquette Ok\/Centre.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"Carpet1",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90,
+         "transparentcolor":"#ff00ff"
+        }, 
+        {
+         "firstgid":27,
+         "image":"..\/Assets graphiques\/Murs\/mur_L1.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"wCorner1",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90,
+         "transparentcolor":"#ff00ff"
+        }, 
+        {
+         "firstgid":28,
+         "image":"..\/Assets graphiques\/Murs\/mur_L2.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"wCorner2c",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90,
+         "transparentcolor":"#ff00ff"
+        }, 
+        {
+         "firstgid":29,
+         "image":"..\/Assets graphiques\/Murs\/mur_L3.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"wCorner3",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90,
+         "transparentcolor":"#ff00ff"
+        }, 
+        {
+         "firstgid":30,
+         "image":"..\/Assets graphiques\/Murs\/mur_L4.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"wCorner4",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90,
+         "transparentcolor":"#ff00ff"
+        }, 
+        {
+         "firstgid":31,
+         "image":"..\/Assets graphiques\/Murs\/mur_border_link_bottom.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"Full_corner1",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90,
+         "transparentcolor":"#ff00ff"
+        }, 
+        {
+         "firstgid":32,
+         "image":"..\/Assets graphiques\/Murs\/mur_border_link_left.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"full_corner2",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90,
+         "transparentcolor":"#ff00ff"
+        }, 
+        {
+         "firstgid":33,
+         "image":"..\/Assets graphiques\/Murs\/mur_border_link_right.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"full_corner3",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90,
+         "transparentcolor":"#ff00ff"
+        }, 
+        {
+         "firstgid":34,
+         "image":"..\/Assets graphiques\/Murs\/mur_border_link_top.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"full_corner4",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90,
+         "transparentcolor":"#ff00ff"
+        }, 
+        {
+         "firstgid":35,
+         "image":"..\/Assets graphiques\/sols\/Moquette\/Moquette Ok\/coinHautGauche.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"carpetCoinTopLeft",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":36,
+         "image":"..\/Assets graphiques\/sols\/Moquette\/Moquette Ok\/centreHaut.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"carpetCenterTop",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":37,
+         "image":"..\/Assets graphiques\/sols\/Moquette\/Moquette Ok\/coinHautDroit.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"carpetCoinTopRight",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":38,
+         "image":"..\/Assets graphiques\/sols\/Moquette\/Moquette Ok\/Centre.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"carpetCenter",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":39,
+         "image":"..\/Assets graphiques\/sols\/Moquette\/Moquette Ok\/centreDroit.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"carpetSideRight",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":40,
+         "image":"..\/Assets graphiques\/sols\/Moquette\/Moquette Ok\/centreGauche.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"carpetSideLeft",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":41,
+         "image":"..\/Assets graphiques\/sols\/Moquette\/Moquette Ok\/coinsBasGauche.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"carpetCoinBotLeft",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":42,
+         "image":"..\/Assets graphiques\/sols\/Moquette\/Moquette Ok\/centreBas.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"carpetCenterBot",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":43,
+         "image":"..\/Assets graphiques\/sols\/Moquette\/Moquette Ok\/coinBasDroit.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"carpetCoinBotRight",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":44,
+         "image":"..\/Assets graphiques\/sols\/Moquette\/coinHautGacuhe.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"carpet2CoinTopLeft",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":45,
+         "image":"..\/Furnitures\/Egg Fauteuil\/ChairEgg_Idle2.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"Egg",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":46,
+         "image":"..\/Furnitures\/Bed\/Bed_Iddle2.png",
+         "imageheight":180,
+         "imagewidth":180,
+         "margin":0,
+         "name":"bed",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":50,
+         "image":"..\/Furnitures\/Table Orange\/Table_Idle2.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"table",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":51,
+         "image":"..\/Furnitures\/Table Orange\/Table_Idle.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"table2",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":52,
+         "image":"..\/Furnitures\/Lampe a lave\/lava_lamp.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"lamp",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":53,
+         "image":"..\/Furnitures\/Computer DOUG II\/Computer.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"computer",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":54,
+         "image":"..\/Furnitures\/Fauteuil Marron\/Fauteuil_Idle2.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"chair",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":55,
+         "image":"..\/Furnitures\/Fauteuil Marron\/Fauteuil_Idle6.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"chair2",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":56,
+         "image":"..\/Furnitures\/Egg Fauteuil\/ChairEgg_Idle7.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"egg2",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":57,
+         "image":"..\/Furnitures\/Canape\/Canape_Idle.png",
+         "imageheight":90,
+         "imagewidth":180,
+         "margin":0,
+         "name":"canap",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":59,
+         "image":"..\/Furnitures\/Atari 2600\/Atari_Idle.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"atari",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":60,
+         "image":"..\/Furnitures\/Fauteuil Marron\/Fauteuil_Idle7.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"chair3",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":61,
+         "image":"..\/Refs\/Graph\/WC.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"Wc",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":62,
+         "image":"..\/Assets graphiques\/sols\/ParquetBrule2.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"BurnWoodenFloor2",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":63,
+         "image":"..\/Assets graphiques\/sols\/BurnWoodenFloor2.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"BurnWoodenFloor1",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }, 
+        {
+         "firstgid":64,
+         "image":"..\/Assets graphiques\/sols\/BurnWoodenFloor1.png",
+         "imageheight":90,
+         "imagewidth":90,
+         "margin":0,
+         "name":"BurnWoodenFloor3",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":90,
+         "tilewidth":90
+        }],
+ "tilewidth":90,
+ "version":1,
+ "width":20
+}
