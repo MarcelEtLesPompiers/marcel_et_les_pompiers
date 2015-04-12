@@ -54,6 +54,7 @@ var PhaserGame = {
 
   // end_game
   end_game_screen: null,
+  print_game_screen: false,
 
   // Player
   player1: null,
@@ -518,7 +519,11 @@ var PhaserGame = {
 
   endgame: function (img)
   {
-    this.end_game_screen = this.add.sprite(0, 0, img);
+    if(!this.print_game_screen)
+    {
+      this.end_game_screen = this.add.sprite(0, 0, img);
+      this.print_game_screen = true;
+    }
   },
 
   /**
