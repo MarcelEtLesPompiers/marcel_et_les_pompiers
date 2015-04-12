@@ -36,7 +36,7 @@ var requiredSpam = 5;
 var hitInvincibility = 1500; // in Ms
 var obstacleHealth = 4; // number of hits to clear an obstacle
 var player1Range = 120; // range in pixel of the axe attack (an attack starts from centerpoint to centerpoint)
-var maxAmmo = 4;
+var maxAmmo = 3;
 
 //
 // Game starts here
@@ -83,6 +83,8 @@ var PhaserGame = {
   pumpSwitch:true,
   pumpModeCounter: null,
   pumpSwitchKey: null,
+
+  player2Icon: null,
 
   // pad
   pad1: null,
@@ -134,6 +136,9 @@ var PhaserGame = {
     this.load.image('BurnWoodenFloor1', 'img/sols/BurnWoodenFloor1.png');
     this.load.image('BurnWoodenFloor2', 'img/sols/BurnWoodenFloor2.png');
     this.load.image('BurnWoodenFloor3', 'img/sols/BurnWoodenFloor3.png');
+
+    this.load.image('sceau', 'img/Sceau_HUD.png');
+    this.load.image('sceau2', 'img/Sceau_HUD_Plein.png');
 
     // Wall tiles
     this.load.image('mur_border_bottom', 'img/Walls/mur_border_bottom.png');
@@ -368,6 +373,8 @@ var PhaserGame = {
     this.startTimer();
 
     this.player2Counter = this.add.text(1700, 1010, this.player2Ammo, textStyle);
+    this.player2Icon = this.add.sprite(1600, 1000, 'sceau2');
+    this.player2Icon.scale.set(0.75);
 
     this.player1Counter = this.add.text(90, 1010, this.player1Charge, textStyle);
     this.setPlayer1Counter();
