@@ -235,8 +235,8 @@ var PhaserGame = {
     this.map = this.add.tilemap('map');
     this.map.addTilesetImage("Wooden_floor", "parquetDroite");
     this.map.addTilesetImage("BurnWoodenFloor1", "BurnWoodenFloor1");
-    this.map.addTilesetImage("BurnWoodenFloor2", "BurnWoodenFloor2");
-    this.map.addTilesetImage("BurnWoodenFloor3", "BurnWoodenFloor3");
+    this.map.addTilesetImage("BurnWoodenFloor2", "BurnWoodenFloor3");
+    this.map.addTilesetImage("BurnWoodenFloor3", "BurnWoodenFloor2");
     this.map.addTilesetImage("hWall", "mur_horizontal");
     this.map.addTilesetImage("vWall", "mur_vertical");
     this.map.addTilesetImage("cWall", "mur_cross");
@@ -327,7 +327,7 @@ var PhaserGame = {
     this.player2.health = 3;
 
     // physics
-    this.map.setCollision([2,3,4], true, this.layer);
+    this.map.setCollisionByExclusion([1], true, this.layer3);
     this.physics.arcade.enable(this.player1);
     this.physics.arcade.enable(this.player2);
 
@@ -352,11 +352,11 @@ var PhaserGame = {
     this.fire_sound.play();
     this.fire_sound.volume = 100;
 
-    // Starts the fire
-    //fireManager.init();
-
     // Places obstacles
     obstacles.init();
+
+    // Starts the fire
+    fireManager.init();
 
     // Interface timeCounter
     this.timer = this.time.create(true);
@@ -394,6 +394,13 @@ var PhaserGame = {
     {
       this.physics.arcade.collide(this.player1, this.layer);
       this.physics.arcade.collide(this.player2, this.layer);
+
+      this.physics.arcade.collide(this.player1, this.layer3);
+      this.physics.arcade.collide(this.player2, this.layer3);
+
+      this.physics.arcade.collide(this.player1, obstacles.group);
+      this.physics.arcade.collide(this.player2, obstacles.group);
+
       this.checkKeys();
       this.physics.arcade.overlap(this.water, this.fire, this.waterCollision);
 
@@ -408,7 +415,7 @@ var PhaserGame = {
     }
     else
     {
-      this.checkSpace()
+      this.checkSpace();
     }
   },
 
@@ -938,15 +945,7 @@ var fireManager = {
     var savedStartKey = [];
     var startKey = null;
 
-    for (i = 0; i < numStartFire; i++) {
-      while (null === startKey || typeof (savedStartKey[startKey]) !== 'undefined') {
-        startKey = Math.floor(Math.random() * startFire.length);
-      }
-      savedStartKey[startKey] = true;
-
-      this.tiles.push(startFire[startKey]);
-      startKey = null;
-    }
+    this.tiles = startFire;
 
     this.display();
     this.timer = PhaserGame.time.create(true);
@@ -1009,10 +1008,10 @@ var fireManager = {
     var x = coords[0];
     var y = coords[1];
     var nextTiles = [
-      PhaserGame.map.getTileLeft(PhaserGame.layer.index, x, y),
-      PhaserGame.map.getTileRight(PhaserGame.layer.index, x, y),
-      PhaserGame.map.getTileAbove(PhaserGame.layer.index, x, y),
-      PhaserGame.map.getTileBelow(PhaserGame.layer.index, x, y)
+      PhaserGame.map.getTileLeft(PhaserGame.layer3.index, x, y),
+      PhaserGame.map.getTileRight(PhaserGame.layer3.index, x, y),
+      PhaserGame.map.getTileAbove(PhaserGame.layer3.index, x, y),
+      PhaserGame.map.getTileBelow(PhaserGame.layer3.index, x, y)
     ];
 
     var returnTiles = [];
