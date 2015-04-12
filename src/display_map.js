@@ -12,6 +12,7 @@ var startFire = [
   [13,9],
   [18,7],
   [12,3],
+  [12, 1],
 ];
 
 var startObstacles = [
@@ -35,6 +36,7 @@ var requiredSpam = 5;
 var hitInvincibility = 1500; // in Ms
 var obstacleHealth = 4; // number of hits to clear an obstacle
 var player1Range = 120; // range in pixel of the axe attack (an attack starts from centerpoint to centerpoint)
+var maxAmmo = 4;
 
 //
 // Game starts here
@@ -67,7 +69,7 @@ var PhaserGame = {
 
   player2Wait: false,
   player2Delay: 500,
-  player2Ammo: 3,
+  player2Ammo: maxAmmo,
   player2Counter: null,
 
   cursors1: null,
@@ -361,28 +363,32 @@ var PhaserGame = {
 
     // Interface timeCounter
     this.timer = this.time.create(true);
-    this.timeCounter = this.add.text(90, 10, '0', {font: "64px Arial", fill: "#FFFFFF"});
+    var textStyle = {font: "60px Arial", fill: "#FFFFFF"};
+    this.timeCounter = this.add.text(85, 10, '0', textStyle);
     this.startTimer();
 
-    this.player2Counter = this.add.text(1580, 1000, this.player2Ammo, {font: "64px Arial", fill: "#FFFFFF"});
+    this.player2Counter = this.add.text(1700, 1010, this.player2Ammo, textStyle);
 
-    this.player1Counter = this.add.text(90, 1000, this.player1Charge, {font: "64px Arial", fill: "#FFFFFF"});
+    this.player1Counter = this.add.text(90, 1010, this.player1Charge, textStyle);
     this.setPlayer1Counter();
 
-    this.pumpModeCounter = this.add.text(500, 1000, 'Pompe vers pompier', {font: "64px Arial", fill: "#FFFFFF"});
+    this.pumpModeCounter = this.add.text(600, 1010, 'Pompe vers pompier', textStyle);
 
     // Iterface lifes
     var i;
     for(i = 0; i < 3; i++) {
-      var heart = this.lifePlayer1.create(260 + (i * 100), 30, 'heart');
+      var heart = this.lifePlayer1.create(1470 + (i * 80), 20, 'heart');
       heart.name = 'heart-' + i;
-      heart.scale.setTo(0.25, 0.25);
+      heart.scale.setTo(0.2, 0.2);
     }
     for(i = 0; i < 3; i++) {
-      var heart = this.lifePlayer2.create(1260 + (i * 100), 30, 'heart');
+      var heart = this.lifePlayer2.create(1470 + (i * 80), 90, 'heart');
       heart.name = 'heart-' + i;
-      heart.scale.setTo(0.25, 0.25);
+      heart.scale.setTo(0.2, 0.2);
     }
+
+    this.add.text(1400, 20, 'P', textStyle);
+    this.add.text(1400, 90, 'M', textStyle);
   },
 
   /**
@@ -846,7 +852,7 @@ var PhaserGame = {
 
       this.setPlayer1Counter();
 
-    } else if(this.player2Ammo < 3) {
+    } else if(this.player2Ammo < maxAmmo) {
       this.player2Ammo++;
       this.player2Counter.setText(this.player2Ammo);
     }
