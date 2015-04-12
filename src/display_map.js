@@ -52,6 +52,9 @@ var PhaserGame = {
   in_game: null,
   ecran_titre: null,
 
+  // end_game
+  end_game_screen: null,
+
   // Player
   player1: null,
   player2: null,
@@ -210,6 +213,10 @@ var PhaserGame = {
     // music
     game.load.audio('musette', ['sound/marcel_musette.mp3', 'sound/marcel_musette.ogg']);
     game.load.audio('fire_sound', ['sound/fire_sound.ogg']);
+
+    // end game
+    this.load.image('Victoire', 'img/screen/Victoire.png');
+    this.load.image('Defaite', 'img/screen/Defaite.png');
   },
 
   /**
@@ -391,6 +398,12 @@ var PhaserGame = {
 
       this.physics.arcade.overlap(this.player1, this.fire, this.damagePlayer);
       this.physics.arcade.overlap(this.player2, this.fire, this.damagePlayer);
+      this.physics.arcade.overlap(this.player1, this.player2,
+          function()
+          {
+            PhaserGame.endgame('Victoire');
+            PhaserGame.stop_game();
+          });
     }
     else
     {
@@ -503,6 +516,11 @@ var PhaserGame = {
     }
   },
 
+  endgame: function (img)
+  {
+    this.end_game_screen = this.add.sprite(0, 0, img);
+  },
+
   /**
    * Damage a player
    *
@@ -510,6 +528,7 @@ var PhaserGame = {
    * @param {type} fire
    * @returns {undefined}
    */
+
   damagePlayer: function(player, fire) {
     if('player1' === player.key && PhaserGame.player1Invincible) {
       return;
@@ -542,25 +561,22 @@ var PhaserGame = {
     PhaserGame.updateHealth(player);
     PhaserGame.knockBack(player);
 
-    if(0 >= player.health) {
+    if(0 >= player.health)
+    {
       PhaserGame.game.debug.geom(new Phaser.Rectangle(0, 0, 1800, 1200), 'rgba(255,0,0,0.3)', true);
-      this.endGame();
+      PhaserGame.endgame('Defaite');
+      PhaserGame.stop_game();
     }
   },
 
-  /**
-   * Stops the game, blocks controls and clear all the timers.
-   *
-   * @returns {undefined}
-   */
-  endGame: function() {
+  stop_game: function()
+  {
     PhaserGame.player1Wait = true;
     PhaserGame.player2Wait = true;
     PhaserGame.move(false, PhaserGame.player1);
     PhaserGame.move(false, PhaserGame.player2);
     PhaserGame.timer.stop();
     PhaserGame.timer.clearPendingEvents();
-
     fireManager.stop();
   },
 
