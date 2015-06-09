@@ -355,10 +355,10 @@ var PhaserGame = {
     // music
     this.musette = game.add.audio('musette');
     this.musette.play();
-    this.musette.volume = 20;
+    this.musette.volume = 1;
     this.fire_sound = game.add.audio('fire_sound');
     this.fire_sound.play();
-    this.fire_sound.volume = 100;
+    this.fire_sound.volume = 3;
 
     // Places obstacles
     obstacles.init();
